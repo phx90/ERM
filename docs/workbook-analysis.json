@@ -1,0 +1,2775 @@
+﻿{
+    "file":  ".\\templates\\SOLICITACAO_DE_COMPRA_ERT_ERM.xlsx",
+    "sheets":  [
+                   {
+                       "name":  "LISTA ESTOQUE",
+                       "state":  "visible",
+                       "dimension":  "A1:K9655",
+                       "xmlRowCount":  9655,
+                       "nonEmptyCellCount":  86822,
+                       "firstDataRow":  1,
+                       "lastDataRow":  9655,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           ""
+                                                       ],
+                       "filters":  [
+                                       ""
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "A1":  "CODIGO PRODUTO",
+                                                            "B1":  "DescriÃ§Ã£o GenÃ©rica",
+                                                            "C1":  "TP",
+                                                            "D1":  "Und.",
+                                                            "E1":  "Grupo",
+                                                            "F1":  "CÃ³d. SOCP",
+                                                            "G1":  "Saldo em Estoque",
+                                                            "H1":  "CÃ³digo Projeto",
+                                                            "I1":  "Custo UnitÃ¡rio",
+                                                            "J1":  "ObservaÃ§Ã£o CÃ³d",
+                                                            "K1":  "C.A "
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "210",
+                                                            "B2":  "ABAFADOR DE RUIDO CONCHA K40                                                                        ",
+                                                            "C2":  "PS",
+                                                            "D2":  "UN",
+                                                            "E2":  "18",
+                                                            "F2":  "    ",
+                                                            "G2":  "0",
+                                                            "H2":  "911",
+                                                            "I2":  "24.265000000000001"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "2237",
+                                                            "B3":  "ABAFADOR P/ ACOPLAR CAPACETE                                                                        ",
+                                                            "C3":  "PS",
+                                                            "D3":  "PC",
+                                                            "E3":  "18",
+                                                            "F3":  "    ",
+                                                            "G3":  "0",
+                                                            "H3":  "911",
+                                                            "I3":  "0"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "9461",
+                                                            "B4":  "ABAFADOR PELTOR H10B 24DB - HIDROJATO                                                               ",
+                                                            "C4":  "PS",
+                                                            "D4":  "PC",
+                                                            "E4":  "18",
+                                                            "F4":  "        ",
+                                                            "G4":  "0",
+                                                            "H4":  "911",
+                                                            "I4":  "273.78061200000002"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "6806",
+                                                            "B5":  "ABERTURA FECHADURA                                                                                  ",
+                                                            "C5":  "MC",
+                                                            "D5":  "UN",
+                                                            "E5":  "1",
+                                                            "F5":  "        ",
+                                                            "G5":  "0",
+                                                            "H5":  "911",
+                                                            "I5":  "0"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "6664",
+                                                            "B6":  "ABRAC MANGOTE 029/32 1.1/8\" A 1.1/4\" SUPRENS                                                        ",
+                                                            "C6":  "MC",
+                                                            "D6":  "PC",
+                                                            "E6":  "2",
+                                                            "F6":  "        ",
+                                                            "G6":  "0",
+                                                            "H6":  "911",
+                                                            "I6":  "8.9"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "8274",
+                                                            "B7":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  16 MM                                                 ",
+                                                            "C7":  "MP",
+                                                            "D7":  "PC",
+                                                            "E7":  "400",
+                                                            "F7":  "        ",
+                                                            "G7":  "14",
+                                                            "H7":  "211",
+                                                            "I7":  "7.0357149999999997"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "8275",
+                                                            "B8":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  20 MM                                                 ",
+                                                            "C8":  "MP",
+                                                            "D8":  "PC",
+                                                            "E8":  "400",
+                                                            "F8":  "        ",
+                                                            "G8":  "51",
+                                                            "H8":  "211",
+                                                            "I8":  "17.838709999999999"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "8276",
+                                                            "B9":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  25 MM                                                 ",
+                                                            "C9":  "MP",
+                                                            "D9":  "PC",
+                                                            "E9":  "400",
+                                                            "F9":  "        ",
+                                                            "G9":  "47",
+                                                            "H9":  "211",
+                                                            "I9":  "17.488719"
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "8277",
+                                                            "B10":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  35 MM                                                 ",
+                                                            "C10":  "MP",
+                                                            "D10":  "PC",
+                                                            "E10":  "400",
+                                                            "F10":  "        ",
+                                                            "G10":  "78",
+                                                            "H10":  "211",
+                                                            "I10":  "13.382222000000001"
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "8278",
+                                                            "B11":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  38 MM                                                 ",
+                                                            "C11":  "MP",
+                                                            "D11":  "PC",
+                                                            "E11":  "400",
+                                                            "F11":  "        ",
+                                                            "G11":  "43",
+                                                            "H11":  "211",
+                                                            "I11":  "20.871428999999999"
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "8272",
+                                                            "B12":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT. 10MM                                                   ",
+                                                            "C12":  "MP",
+                                                            "D12":  "PC",
+                                                            "E12":  "400",
+                                                            "F12":  "        ",
+                                                            "G12":  "19",
+                                                            "H12":  "211",
+                                                            "I12":  "7.3039389999999997"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "Lista de compra - 2024",
+                       "state":  "hidden",
+                       "dimension":  "A1:K9575",
+                       "xmlRowCount":  9574,
+                       "nonEmptyCellCount":  25208,
+                       "firstDataRow":  1,
+                       "lastDataRow":  9575,
+                       "formulas":  45,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           "G4:G162",
+                                                           "G4:G1048576",
+                                                           "G188",
+                                                           "G197:G201",
+                                                           "G200:G201",
+                                                           "G203",
+                                                           "G204",
+                                                           "G627:G630",
+                                                           "I312"
+                                                       ],
+                       "filters":  [
+                                       "A4:I5967"
+                                   ],
+                       "mergedCells":  [
+                                           "A1:I2",
+                                           "A3:I3"
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "J1":  "CODIGO PRODUTO",
+                                                            "K1":  "DescriÃ§Ã£o GenÃ©rica"
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "J2":  "210",
+                                                            "K2":  "ABAFADOR DE RUIDO CONCHA K40                                                                        "
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "SOLICITAÃ‡ÃƒO DE COMPRAS",
+                                                            "J3":  "2237",
+                                                            "K3":  "ABAFADOR P/ ACOPLAR CAPACETE                                                                        "
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "SC",
+                                                            "B4":  "DATA SOLICITAÃ‡ÃƒO",
+                                                            "C4":  "SOLICITANTE",
+                                                            "D4":  "QTD. ESTOQUE",
+                                                            "E4":  "CÃ“DIGO",
+                                                            "F4":  "DESCRIÃ‡ÃƒO",
+                                                            "G4":  "CRITICIDADE",
+                                                            "H4":  "UTILIZAÃ‡ÃƒO",
+                                                            "I4":  "OBSERVAÃ‡ÃƒO",
+                                                            "J4":  "9461",
+                                                            "K4":  "ABAFADOR PELTOR H10B 24DB - HIDROJATO                                                               "
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "128",
+                                                            "B5":  "42429",
+                                                            "C5":  "ReposiÃ§Ã£o Estoque",
+                                                            "D5":  "10pct",
+                                                            "E5":  "2245",
+                                                            "F5":  "Papel HigiÃªnico",
+                                                            "G5":  "MÃ©dia",
+                                                            "H5":  "Material Limpeza",
+                                                            "I5":  "Estaleiro",
+                                                            "J5":  "6806",
+                                                            "K5":  "ABERTURA FECHADURA                                                                                  "
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "128",
+                                                            "B6":  "42429",
+                                                            "C6":  "ReposiÃ§Ã£o Estoque",
+                                                            "D6":  "10pc",
+                                                            "E6":  "351",
+                                                            "F6":  "Papel Toalha Branco",
+                                                            "G6":  "MÃ©dia",
+                                                            "H6":  "Material Limpeza",
+                                                            "I6":  "Estaleiro",
+                                                            "J6":  "6664",
+                                                            "K6":  "ABRAC MANGOTE 029/32 1.1/8\" A 1.1/4\" SUPRENS                                                        "
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "129",
+                                                            "B7":  "42429",
+                                                            "C7":  "ReposiÃ§Ã£o Estoque",
+                                                            "D7":  "10pc",
+                                                            "E7":  "88",
+                                                            "F7":  "PAPEL SULFITE A4 C/ 500 FLS",
+                                                            "G7":  "Alta",
+                                                            "H7":  "Material de escritÃ³rio",
+                                                            "I7":  "Estaleiro",
+                                                            "J7":  "8274",
+                                                            "K7":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  16 MM                                                 "
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "129",
+                                                            "B8":  "42429",
+                                                            "C8":  "ReposiÃ§Ã£o Estoque",
+                                                            "D8":  "10pc",
+                                                            "E8":  "1278",
+                                                            "F8":  "Envelope Saco Papel Pardo A4 ",
+                                                            "G8":  "MÃ©dia",
+                                                            "H8":  "Material de escritÃ³rio",
+                                                            "I8":  "Estaleiro",
+                                                            "J8":  "8275",
+                                                            "K8":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  20 MM                                                 "
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "129",
+                                                            "B9":  "42429",
+                                                            "C9":  "ReposiÃ§Ã£o Estoque",
+                                                            "D9":  "10pc",
+                                                            "E9":  "3277",
+                                                            "F9":  "PAPEL SULFITE A3 500FLS",
+                                                            "G9":  "MÃ©dia",
+                                                            "H9":  "Material de escritÃ³rio",
+                                                            "I9":  "Estaleiro",
+                                                            "J9":  "8276",
+                                                            "K9":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  25 MM                                                 "
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "134",
+                                                            "B10":  "42430",
+                                                            "C10":  "ReposiÃ§Ã£o Estoque",
+                                                            "D10":  "10pc",
+                                                            "E10":  "4533",
+                                                            "F10":  "JUNTA VEDACAO CORTADA 150 LBS 4\" - PAPELAO HIDRAULICO U60NA",
+                                                            "G10":  "Alta",
+                                                            "H10":  "Balsas",
+                                                            "I10":  "Comboio 01",
+                                                            "J10":  "8277",
+                                                            "K10":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  35 MM                                                 "
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "164",
+                                                            "B11":  "42447",
+                                                            "C11":  "ReposiÃ§Ã£o Estoque",
+                                                            "D11":  "10pc",
+                                                            "E11":  "88",
+                                                            "F11":  "PAPEL SULFITE A4 C/ 500 FLS",
+                                                            "G11":  "Alta",
+                                                            "H11":  "Material de escritÃ³rio",
+                                                            "I11":  "Estaleiro",
+                                                            "J11":  "8278",
+                                                            "K11":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT.  38 MM                                                 "
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "164",
+                                                            "B12":  "42447",
+                                                            "C12":  "ReposiÃ§Ã£o Estoque",
+                                                            "D12":  "10pc",
+                                                            "E12":  "3277",
+                                                            "F12":  "PAPEL SULFITE A3 500FLS",
+                                                            "G12":  "Alta",
+                                                            "H12":  "Material de escritÃ³rio",
+                                                            "I12":  "Estaleiro",
+                                                            "J12":  "8272",
+                                                            "K12":  "ABRAC. TUBO ACO TREF. TIPO ERMETO DIAM. EXT. 10MM                                                   "
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "Lista de compra - 2025",
+                       "state":  "hidden",
+                       "dimension":  "A1:I5066",
+                       "xmlRowCount":  5066,
+                       "nonEmptyCellCount":  1946,
+                       "firstDataRow":  1,
+                       "lastDataRow":  254,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           "G2",
+                                                           "G2:G1048576 I133"
+                                                       ],
+                       "filters":  [
+                                       "A2:I5066"
+                                   ],
+                       "mergedCells":  [
+                                           "A1:C1",
+                                           "D1:I1"
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "D1":  "SOLICITAÃ‡ÃƒO DE COMPRAS "
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "SC",
+                                                            "B2":  "DATA SOLICITAÃ‡ÃƒO",
+                                                            "C2":  "SOLICITANTE",
+                                                            "D2":  "QTD. ESTOQUE",
+                                                            "E2":  "CÃ“DIGO",
+                                                            "F2":  "DESCRIÃ‡ÃƒO",
+                                                            "G2":  "CRITICIDADE",
+                                                            "H2":  "UTILIZAÃ‡ÃƒO",
+                                                            "I2":  "OBSERVAÃ‡ÃƒO"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "742",
+                                                            "B3":  "45637",
+                                                            "C3":  "ALMOXERIFADO",
+                                                            "D3":  "2",
+                                                            "E3":  "000199",
+                                                            "F3":  "BICO DE CORTE 1502 NR. 10 - HARRIS",
+                                                            "G3":  "ALTA ",
+                                                            "I3":  "Li, deu certo pedir desse bico."
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "744",
+                                                            "B4":  "45663",
+                                                            "C4":  "ALMOXERIFADO",
+                                                            "D4":  "0",
+                                                            "E4":  "002389",
+                                                            "F4":  "LIQUIDO REFRIGERANTE P/ CIRCULADOR (COOLER), PN 0558004297 (3,6LTS)",
+                                                            "G4":  "ALTA ",
+                                                            "I4":  "Li, pegaram o ultimo hoje mas como a maquina estÃ¡ com problema de fazamendo ainda faltou para completar, estÃ£o pedindo para comprar mais, dessa vez ira precisar pelo menos de uns 05 unidades."
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "744",
+                                                            "B5":  "45663",
+                                                            "C5":  "ALMOXERIFADO",
+                                                            "D5":  "5",
+                                                            "E5":  "000323",
+                                                            "F5":  "AVENTAL DE RASPA INTEIRO",
+                                                            "G5":  "MEDIA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "745",
+                                                            "B6":  "45671",
+                                                            "C6":  "ALMOXERIFADO",
+                                                            "D6":  "1",
+                                                            "E6":  "2301",
+                                                            "F6":  "SACO DE LIXO 20 LTS                                                                                 ",
+                                                            "G6":  "MEDIA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "745",
+                                                            "B7":  "45671",
+                                                            "C7":  "ALMOXERIFADO",
+                                                            "D7":  "0",
+                                                            "E7":  "4197",
+                                                            "F7":  "VENENO PERNILONGO                                                                                   ",
+                                                            "G7":  "MEDIA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "745",
+                                                            "B8":  "45671",
+                                                            "C8":  "ALMOXERIFADO",
+                                                            "D8":  "1",
+                                                            "E8":  "349",
+                                                            "F8":  "SABONETE LIQUIDO 5 LTS                                                                              ",
+                                                            "G8":  "MEDIA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "745",
+                                                            "B9":  "45671",
+                                                            "C9":  "ALMOXERIFADO",
+                                                            "D9":  "0",
+                                                            "E9":  "2992",
+                                                            "F9":  "MULTIUSO                                                                                            ",
+                                                            "G9":  "MEDIA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "745",
+                                                            "B10":  "45671",
+                                                            "C10":  "ALMOXERIFADO",
+                                                            "D10":  "1",
+                                                            "E10":  "2085",
+                                                            "F10":  "LIMPA VIDRO                                                                                         ",
+                                                            "G10":  "MEDIA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "745",
+                                                            "B11":  "45671",
+                                                            "C11":  "ALMOXERIFADO",
+                                                            "D11":  "2",
+                                                            "E11":  "345",
+                                                            "F11":  "DESINFETANTE NATURA 5 LTS                                                                           ",
+                                                            "G11":  "MEDIA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "745",
+                                                            "B12":  "45671",
+                                                            "C12":  "ALMOXERIFADO",
+                                                            "D12":  "2",
+                                                            "E12":  "346",
+                                                            "F12":  "DETERGENTE LIQUIDO 5 LTS                                                                            ",
+                                                            "G12":  "MEDIA"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "Lista de compra - 2026",
+                       "state":  "visible",
+                       "dimension":  "A1:XDX10567",
+                       "xmlRowCount":  10567,
+                       "nonEmptyCellCount":  29280,
+                       "firstDataRow":  1,
+                       "lastDataRow":  10000,
+                       "formulas":  10557,
+                       "brokenRefs":  [
+                                          {
+                                              "cell":  "S237",
+                                              "formula":  "ABS(#REF!-R237)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S238",
+                                              "formula":  "ABS(#REF!-R238)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S239",
+                                              "formula":  "ABS(#REF!-R239)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S240",
+                                              "formula":  "ABS(#REF!-R240)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S241",
+                                              "formula":  "ABS(#REF!-R241)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S242",
+                                              "formula":  "ABS(#REF!-R242)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S243",
+                                              "formula":  "ABS(#REF!-R243)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S244",
+                                              "formula":  "ABS(#REF!-R244)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S322",
+                                              "formula":  "ABS(#REF!-R322)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S323",
+                                              "formula":  "ABS(#REF!-R323)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S324",
+                                              "formula":  "ABS(#REF!-R324)",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "S325",
+                                              "formula":  "ABS(#REF!-R325)",
+                                              "value":  "#REF!"
+                                          }
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "K337:K350 K242:K249 K327:K328 K362:K476 K488:K491",
+                                                   "type":  "list",
+                                                   "formula1":  "\"BALSA - MRS, EMPURRADOR - MRS\""
+                                               },
+                                               {
+                                                   "sqref":  "N10567:N1048576",
+                                                   "type":  "list",
+                                                   "formula1":  "\"Pendente,Atrasado,Em TrÃ¢nsito,Chegou,Cancelado\""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           "A1:B1 E1 T1:XFD1 B2:XFD2 A3:XFD468 S469:XFD531 A488:G491 I488:R491 A492:R522 C523:M523 A523:B529 N523:R529 E524:I527 C524:D528 J524:M529 E528:G528 I528 C529:I529 A530:R531 A532:XFD577 A578:R579 S578:XFD613 A580:M583 N580:R613 A584:G589 I585:M585 H586:M589 A590:C591 E590:M592 A592:B593 D593:M593 A594:M594 A595:I595 J595:M597 A596:G596 I596 A597:I597 A598:M613 A614:XFD620 A621:M630 N621:XFD729 I631:M636 A631:G653 I637:I643 J637:M659 I650:I655 E654:G655 A654:D659 E656:I659 A660:M669 A670:G686 I670:M686 A687:M687 A688:G698 I688:M698 A699:M699 A700:G728 J700:M728 I725 H726:I726 I727:I728 A729:M733 N730:R735 S730:XFD756 A734:G735 I734:L735 A736:R743 A744:G744 I744:R744 A745:R746 A747:N747 P747:R747 A748:R754 I755:R755 A755:G756 I756 K756:R756 J756:J762 A757:I758 K757:XFD762 B759:I759 A759:A765 G760:I762 B760:F765 G763:XFD763 G764 I764:XFD764 G765:XFD767 A766:F767 J768:L770 N768:XFD770 A768:G771 I768:I771 J771:XFD778 A772:I772 E773:I774 A773:D778 E775:G775 I775 E776:I776 E777:G777 I777 E778:I778 A779:XFD781 A782:G782 I782:XFD782 A783:XFD783 A784:G784 I784:XFD784 J785:XFD785 A785:I786 J786:L787 M786:XFD788 A787:G787 I787 A788:L788 I789:XFD794 A789:G795 I795:L795 M795:XFD797 E796:L796 A796:D799 I797:L797 E797:G799 I798:XFD799 A800:XFD802 I803:XFD811 A803:G813 I812:I813 J812:XFD814 A814:I814 A815:G816 I815:XFD816 A817:XFD817 A818:G820 I818:XFD820 A821:XFD821 A822:G823 I822:XFD823 A824:XFD824 A825:L827 M825:XFD833 A828:G833 I828:L833 A834:I834 J834:XFD835 I835 A835:G838 I836:XFD838 A839:XFD10565 A10566:G10567 I10566:XFD10567 A10568:XFD1048576",
+                                                           "A469:R487",
+                                                           "H718",
+                                                           "H584:M584",
+                                                           "K536",
+                                                           "K551",
+                                                           "K10566",
+                                                           "L2",
+                                                           "L2:L1048576 K533 K584:K585",
+                                                           "M5",
+                                                           "N32 N88 N145 N187 N197 N209",
+                                                           "N51 N73 N122 N558:N616 N621:N757",
+                                                           "N558:N616 N621:N757 N51 N73 N122",
+                                                           "N614:N619",
+                                                           "N618:N620",
+                                                           "N620",
+                                                           "N688:N692 N694:N695 N697 N699 N702:N703 N707:N708 N710:N712 N719:N721 N723",
+                                                           "N688:N692 N699 N694:N695 N697 N702:N703 N707:N708 N710:N712 N719:N721 N723",
+                                                           "N688:N692 N699",
+                                                           "N694:N697 N701:N704 N706:N723",
+                                                           "N743",
+                                                           "N757 N760:N10566",
+                                                           "N757:N10566",
+                                                           "N760",
+                                                           "N781",
+                                                           "N796:N797 N815 M10566:N10566",
+                                                           "N3:Q3",
+                                                           "N3:Q9",
+                                                           "N3:Q557 M551:Q551",
+                                                           "N758:Q759",
+                                                           "O758:Q759",
+                                                           "R7:R331",
+                                                           "R9",
+                                                           "R523 R525:R528",
+                                                           "R535"
+                                                       ],
+                       "filters":  [
+                                       "A2:S10567"
+                                   ],
+                       "mergedCells":  [
+                                           "E1:S1"
+                                       ],
+                       "farCells":  [
+                                        {
+                                            "row":  10001,
+                                            "col":  14,
+                                            "ref":  "N10001",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10001,
+                                            "col":  19,
+                                            "ref":  "S10001",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10002,
+                                            "col":  14,
+                                            "ref":  "N10002",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10002,
+                                            "col":  19,
+                                            "ref":  "S10002",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10003,
+                                            "col":  14,
+                                            "ref":  "N10003",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10003,
+                                            "col":  19,
+                                            "ref":  "S10003",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10004,
+                                            "col":  14,
+                                            "ref":  "N10004",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10004,
+                                            "col":  19,
+                                            "ref":  "S10004",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10005,
+                                            "col":  14,
+                                            "ref":  "N10005",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10005,
+                                            "col":  19,
+                                            "ref":  "S10005",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10006,
+                                            "col":  14,
+                                            "ref":  "N10006",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10006,
+                                            "col":  19,
+                                            "ref":  "S10006",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10007,
+                                            "col":  14,
+                                            "ref":  "N10007",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10007,
+                                            "col":  19,
+                                            "ref":  "S10007",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10008,
+                                            "col":  14,
+                                            "ref":  "N10008",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10008,
+                                            "col":  19,
+                                            "ref":  "S10008",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10009,
+                                            "col":  14,
+                                            "ref":  "N10009",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10009,
+                                            "col":  19,
+                                            "ref":  "S10009",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10010,
+                                            "col":  14,
+                                            "ref":  "N10010",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10010,
+                                            "col":  19,
+                                            "ref":  "S10010",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10011,
+                                            "col":  14,
+                                            "ref":  "N10011",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10011,
+                                            "col":  19,
+                                            "ref":  "S10011",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10012,
+                                            "col":  14,
+                                            "ref":  "N10012",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10012,
+                                            "col":  19,
+                                            "ref":  "S10012",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10013,
+                                            "col":  14,
+                                            "ref":  "N10013",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10013,
+                                            "col":  19,
+                                            "ref":  "S10013",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10014,
+                                            "col":  14,
+                                            "ref":  "N10014",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10014,
+                                            "col":  19,
+                                            "ref":  "S10014",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10015,
+                                            "col":  14,
+                                            "ref":  "N10015",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10015,
+                                            "col":  19,
+                                            "ref":  "S10015",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10016,
+                                            "col":  14,
+                                            "ref":  "N10016",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10016,
+                                            "col":  19,
+                                            "ref":  "S10016",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10017,
+                                            "col":  14,
+                                            "ref":  "N10017",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10017,
+                                            "col":  19,
+                                            "ref":  "S10017",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10018,
+                                            "col":  14,
+                                            "ref":  "N10018",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10018,
+                                            "col":  19,
+                                            "ref":  "S10018",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10019,
+                                            "col":  14,
+                                            "ref":  "N10019",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10019,
+                                            "col":  19,
+                                            "ref":  "S10019",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10020,
+                                            "col":  14,
+                                            "ref":  "N10020",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10020,
+                                            "col":  19,
+                                            "ref":  "S10020",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10021,
+                                            "col":  14,
+                                            "ref":  "N10021",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10021,
+                                            "col":  19,
+                                            "ref":  "S10021",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10022,
+                                            "col":  14,
+                                            "ref":  "N10022",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10022,
+                                            "col":  19,
+                                            "ref":  "S10022",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10023,
+                                            "col":  14,
+                                            "ref":  "N10023",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10023,
+                                            "col":  19,
+                                            "ref":  "S10023",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10024,
+                                            "col":  14,
+                                            "ref":  "N10024",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10024,
+                                            "col":  19,
+                                            "ref":  "S10024",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10025,
+                                            "col":  14,
+                                            "ref":  "N10025",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10025,
+                                            "col":  19,
+                                            "ref":  "S10025",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10026,
+                                            "col":  14,
+                                            "ref":  "N10026",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10026,
+                                            "col":  19,
+                                            "ref":  "S10026",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10027,
+                                            "col":  14,
+                                            "ref":  "N10027",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10027,
+                                            "col":  19,
+                                            "ref":  "S10027",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10028,
+                                            "col":  14,
+                                            "ref":  "N10028",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10028,
+                                            "col":  19,
+                                            "ref":  "S10028",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10029,
+                                            "col":  14,
+                                            "ref":  "N10029",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10029,
+                                            "col":  19,
+                                            "ref":  "S10029",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10030,
+                                            "col":  14,
+                                            "ref":  "N10030",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10030,
+                                            "col":  19,
+                                            "ref":  "S10030",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10031,
+                                            "col":  14,
+                                            "ref":  "N10031",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10031,
+                                            "col":  19,
+                                            "ref":  "S10031",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10032,
+                                            "col":  14,
+                                            "ref":  "N10032",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10032,
+                                            "col":  19,
+                                            "ref":  "S10032",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10033,
+                                            "col":  14,
+                                            "ref":  "N10033",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10033,
+                                            "col":  19,
+                                            "ref":  "S10033",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10034,
+                                            "col":  14,
+                                            "ref":  "N10034",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10034,
+                                            "col":  19,
+                                            "ref":  "S10034",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10035,
+                                            "col":  14,
+                                            "ref":  "N10035",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10035,
+                                            "col":  19,
+                                            "ref":  "S10035",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10036,
+                                            "col":  14,
+                                            "ref":  "N10036",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10036,
+                                            "col":  19,
+                                            "ref":  "S10036",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10037,
+                                            "col":  14,
+                                            "ref":  "N10037",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10037,
+                                            "col":  19,
+                                            "ref":  "S10037",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10038,
+                                            "col":  14,
+                                            "ref":  "N10038",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10038,
+                                            "col":  19,
+                                            "ref":  "S10038",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10039,
+                                            "col":  14,
+                                            "ref":  "N10039",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10039,
+                                            "col":  19,
+                                            "ref":  "S10039",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10040,
+                                            "col":  14,
+                                            "ref":  "N10040",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10040,
+                                            "col":  19,
+                                            "ref":  "S10040",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10041,
+                                            "col":  14,
+                                            "ref":  "N10041",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10041,
+                                            "col":  19,
+                                            "ref":  "S10041",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10042,
+                                            "col":  14,
+                                            "ref":  "N10042",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10042,
+                                            "col":  19,
+                                            "ref":  "S10042",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10043,
+                                            "col":  14,
+                                            "ref":  "N10043",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10043,
+                                            "col":  19,
+                                            "ref":  "S10043",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10044,
+                                            "col":  14,
+                                            "ref":  "N10044",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10044,
+                                            "col":  19,
+                                            "ref":  "S10044",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10045,
+                                            "col":  14,
+                                            "ref":  "N10045",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10045,
+                                            "col":  19,
+                                            "ref":  "S10045",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10046,
+                                            "col":  14,
+                                            "ref":  "N10046",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10046,
+                                            "col":  19,
+                                            "ref":  "S10046",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10047,
+                                            "col":  14,
+                                            "ref":  "N10047",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10047,
+                                            "col":  19,
+                                            "ref":  "S10047",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10048,
+                                            "col":  14,
+                                            "ref":  "N10048",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10048,
+                                            "col":  19,
+                                            "ref":  "S10048",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10049,
+                                            "col":  14,
+                                            "ref":  "N10049",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10049,
+                                            "col":  19,
+                                            "ref":  "S10049",
+                                            "value":  "0"
+                                        },
+                                        {
+                                            "row":  10050,
+                                            "col":  14,
+                                            "ref":  "N10050",
+                                            "value":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                        },
+                                        {
+                                            "row":  10050,
+                                            "col":  19,
+                                            "ref":  "S10050",
+                                            "value":  "0"
+                                        }
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "E1":  "SOLICITAÃ‡ÃƒO DE COMPRAS "
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "SC",
+                                                            "B2":  "COMPRADOR",
+                                                            "C2":  "NÂº OC",
+                                                            "D2":  "DATA DA SOLIC.",
+                                                            "E2":  "REQUISITANTE",
+                                                            "F2":  "CARGO / DEPARTAMENTO",
+                                                            "G2":  "CÃ“D.",
+                                                            "H2":  "DESCRIÃ‡ÃƒO",
+                                                            "I2":  "QUANT.",
+                                                            "J2":  "UNIDADE",
+                                                            "K2":  "PROJETO",
+                                                            "L2":  "CRITICIDADE",
+                                                            "M2":  "OBSERVAÃ‡ÃƒO/APLICAÃ‡ÃƒO",
+                                                            "N2":  "STATUS",
+                                                            "O2":  "FORNECEDOR",
+                                                            "P2":  "DATA DE AQUISIÃ‡ÃƒO",
+                                                            "Q2":  "PREVISÃƒO\nENTREGA",
+                                                            "R2":  "ENTREGA\nREAL",
+                                                            "S2":  "LEAD TIME DE COMPRA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "782",
+                                                            "B3":  "MARCIO",
+                                                            "C3":  "86014",
+                                                            "D3":  "46026",
+                                                            "E3":  "ALMOXARIFADO",
+                                                            "F3":  "SOLDADOR",
+                                                            "H3":  "MÃ¡scara de Solda com Visor Articulado CELERON",
+                                                            "I3":  "29",
+                                                            "J3":  "UNIDADES",
+                                                            "K3":  "BALSA - MRS",
+                                                            "L3":  "MEDIA",
+                                                            "M3":  "PARA OS SOLDADORES DE BELEM",
+                                                            "N3":  "ENTREGUE",
+                                                            "O3":  "LEDAN INDUSTRIA E COMERCIO LTDA",
+                                                            "P3":  "46178",
+                                                            "R3":  "46197",
+                                                            "S3":  "171"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "766",
+                                                            "D4":  "46028",
+                                                            "E4":  "ALMOXERIFADO",
+                                                            "F4":  "FabrigaÃ§Ã£o de Paineis",
+                                                            "H4":  "MARRETA 1,5 KG C/ CABO",
+                                                            "L4":  "MEDIA",
+                                                            "M4":  "Ã‰  utilizado na fabricaÃ§Ã£o dos Paineis",
+                                                            "N4":  "ENTREGUE",
+                                                            "R4":  "185"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "766",
+                                                            "D5":  "46028",
+                                                            "E5":  "ALMOXARIFADO",
+                                                            "F5":  "FabrigaÃ§Ã£o de Paineis",
+                                                            "H5":  "MARRETA C/ CABO 2 KG",
+                                                            "L5":  "MEDIA",
+                                                            "N5":  "ENTREGUE",
+                                                            "S5":  "46028"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "766",
+                                                            "D6":  "46028",
+                                                            "E6":  "ALMOXARIFADO",
+                                                            "F6":  "fabrigaÃ§Ã£o de Paineis / solda",
+                                                            "H6":  "CHAVE INGLESA 12\"",
+                                                            "L6":  "MEDIA",
+                                                            "M6":  "Ã‰ usada para trocar os cilindros.",
+                                                            "N6":  "ENTREGUE",
+                                                            "S6":  "46028"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "766",
+                                                            "D7":  "46028",
+                                                            "E7":  "ALMOXARIFADO",
+                                                            "F7":  "REPOSICAO ESTOQUE",
+                                                            "H7":  "CHAVE INGLESA 6\"",
+                                                            "L7":  "MEDIA",
+                                                            "N7":  "ENTREGUE",
+                                                            "S7":  "46028"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "766",
+                                                            "D8":  "46028",
+                                                            "E8":  "ALMOXARIFADO",
+                                                            "F8":  "REPOSICAO ESTOQUE",
+                                                            "H8":  "CHAVE COMBINADA 13MM",
+                                                            "L8":  "MEDIA",
+                                                            "N8":  "ENTREGUE",
+                                                            "S8":  "46028"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "766",
+                                                            "D9":  "46028",
+                                                            "E9":  "ALMOXARIFADO",
+                                                            "F9":  "REPOSICAO ESTOQUE",
+                                                            "H9":  "ALICATE MULTIFUNCAO P/ SOLDA",
+                                                            "L9":  "MEDIA",
+                                                            "M9":  "Ã‰ utilizado pelo os soldadores",
+                                                            "N9":  "ENTREGUE",
+                                                            "S9":  "46028"
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "766",
+                                                            "D10":  "46028",
+                                                            "E10":  "ALMOXARIFADO",
+                                                            "F10":  "REPOSICAO ESTOQUE",
+                                                            "H10":  "PORTA BOCAL MB406 OXIMIG/MB406",
+                                                            "L10":  "ALTA",
+                                                            "N10":  "ENTREGUE",
+                                                            "S10":  "46028"
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "766",
+                                                            "D11":  "46028",
+                                                            "E11":  "ALMOXARIFADO",
+                                                            "F11":  "REPOSICAO ESTOQUE",
+                                                            "H11":  "BOCAL MIG ME 516",
+                                                            "L11":  "ALTA",
+                                                            "N11":  "ENTREGUE",
+                                                            "S11":  "46028"
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "766",
+                                                            "D12":  "46028",
+                                                            "E12":  "ALMOXARIFADO",
+                                                            "F12":  "REPOSICAO ESTOQUE",
+                                                            "H12":  "BICO CONTATO MA597 1,2MM",
+                                                            "L12":  "MEDIA",
+                                                            "N12":  "ENTREGUE",
+                                                            "S12":  "46028"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "Indicadores ",
+                       "state":  "hidden",
+                       "dimension":  "A1",
+                       "xmlRowCount":  1,
+                       "nonEmptyCellCount":  0,
+                       "firstDataRow":  null,
+                       "lastDataRow":  null,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           ""
+                                                       ],
+                       "filters":  [
+                                       ""
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+
+                                      ]
+                   },
+                   {
+                       "name":  "Planilha3",
+                       "state":  "hidden",
+                       "dimension":  "A1:B9",
+                       "xmlRowCount":  9,
+                       "nonEmptyCellCount":  18,
+                       "firstDataRow":  1,
+                       "lastDataRow":  9,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           "A1:B8 B9"
+                                                       ],
+                       "filters":  [
+                                       ""
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "A1":  "DESCRIÃ‡ÃƒO",
+                                                            "B1":  "QUANTIDADE"
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "TOMADAS 3P + T 63 A IP67 STRAHL CÃ“D:4546 CK",
+                                                            "B2":  "28"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "TOMADAS 2P + T16 A IP67 STRAHL CÃ“D:3046",
+                                                            "B3":  "28"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "TOMADA MULTIPOLAR 5 PINOS (4+1) / COMPLETA MACHO - FEMEA",
+                                                            "B4":  "16"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "PLUG 2P+T 16A 200/250V 6H AZ ",
+                                                            "B5":  "20"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "PLUG 3P+T 32 AMP. STECK VERMELHA",
+                                                            "B6":  "10"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "TOMADA SOBREPOR 3P+T 32 AMP. STECK VERMELHA",
+                                                            "B7":  "20"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "PLUG 3P+T 63A 380/440V 6H VM A-4576",
+                                                            "B8":  "20"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "Tomada Acoplamento Industrial 3p+t 63a 6h 380v",
+                                                            "B9":  "20"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "Planilha2",
+                       "state":  "hidden",
+                       "dimension":  "A1:E64",
+                       "xmlRowCount":  64,
+                       "nonEmptyCellCount":  131,
+                       "firstDataRow":  1,
+                       "lastDataRow":  64,
+                       "formulas":  126,
+                       "brokenRefs":  [
+                                          {
+                                              "cell":  "A60",
+                                              "formula":  "\u0027Lista de compra - 2026\u0027!#REF!",
+                                              "value":  "#REF!"
+                                          },
+                                          {
+                                              "cell":  "B60",
+                                              "formula":  "\u0027Lista de compra - 2026\u0027!#REF!",
+                                              "value":  "#REF!"
+                                          }
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           ""
+                                                       ],
+                       "filters":  [
+                                       ""
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "A1":  "NOME DA MERCADORIA",
+                                                            "B1":  "QTADADE",
+                                                            "C1":  "FG FERRAMENTAS",
+                                                            "D1":  "RITEC",
+                                                            "E1":  "ANHANGUERA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "ALICATE BICO MEIA CANA RETO 6\u0027\u0027 ISOLAÃ‡ÃƒO DE 1000 VOLTS",
+                                                            "B2":  "3"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "ALICATE BICO MEIA CANA RETO 6\u0027\u0027 ISOLAÃ‡ÃƒO DE 1000 VOLTS",
+                                                            "B3":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "ALICATE CORTE DIAGONAL 6\u0027\u0027 ISOLAÃ‡ÃƒO DE 1000 VOLTS",
+                                                            "B4":  "3"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "ALICATE CORTE DIAGONAL 6\u0027\u0027 ISOLAÃ‡ÃƒO DE 1000 VOLTS",
+                                                            "B5":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "ALICATE CRIMPADOR HIDRAULICO DE 10 - 300mm 16 TONS YQK-300a Ferplus",
+                                                            "B6":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "ALICATE CRIMPADOR HIDRAULICO PRENSA CRIMPA TERMINAL 4 - 70mm",
+                                                            "B7":  "2"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "ALICATE CRIMPAR PRENSA TERMINAL 0,25mmÂ² atÃ© 10mmÂ²",
+                                                            "B8":  "3"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "ALICATE DE CORTE TESOURA CATRACA CABOS ATÃ‰ 240mm",
+                                                            "B9":  "3"
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "ALICATE DESENCAPADOR/DECAPADOR/DESCASCADOR/ FIOS E CABOS 0,2mmÂ² ATÃ‰ 6mmÂ² T7",
+                                                            "B10":  "3"
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "ALICATE MULTIMETRO AMPERIMETRO FLUKE MODELO 302+",
+                                                            "B11":  "3"
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "ALICATE MULTIMETRO AMPERIMETRO FLUKE MODELO 302+",
+                                                            "B12":  "1"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "ESTOQUE MINIMO",
+                       "state":  "hidden",
+                       "dimension":  "A1:B2",
+                       "xmlRowCount":  2,
+                       "nonEmptyCellCount":  4,
+                       "firstDataRow":  1,
+                       "lastDataRow":  2,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           ""
+                                                       ],
+                       "filters":  [
+                                       ""
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "A1":  "ITEM",
+                                                            "B1":  "QTDE"
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "BACKING CERAMICO",
+                                                            "B2":  "20 CAIXAS"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "Lista de compra Lixadeira 2025",
+                       "state":  "hidden",
+                       "dimension":  "A1:K8577",
+                       "xmlRowCount":  8576,
+                       "nonEmptyCellCount":  17379,
+                       "firstDataRow":  1,
+                       "lastDataRow":  8577,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           "G2",
+                                                           "G2:G1048576"
+                                                       ],
+                       "filters":  [
+                                       "A2:I4969"
+                                   ],
+                       "mergedCells":  [
+                                           "A1:I1"
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "A1":  "SOLICITAÃ‡ÃƒO DE COMPRAS ELETRICA - MONTAGEM MAQUINAS DE SOLDA ",
+                                                            "J1":  "2237",
+                                                            "K1":  "ABAFADOR P/ ACOPLAR CAPACETE                                                                        "
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "SC",
+                                                            "B2":  "DATA SOLICITAÃ‡ÃƒO",
+                                                            "C2":  "SOLICITANTE",
+                                                            "D2":  "QTD. ESTOQUE",
+                                                            "E2":  "CÃ“DIGO",
+                                                            "F2":  "DESCRIÃ‡ÃƒO",
+                                                            "G2":  "CRITICIDADE",
+                                                            "H2":  "UTILIZAÃ‡ÃƒO",
+                                                            "I2":  "OBSERVAÃ‡ÃƒO",
+                                                            "J2":  "9461",
+                                                            "K2":  "ABAFADOR PELTOR H10B 24DB - HIDROJATO                                                               "
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "757",
+                                                            "B3":  "45964",
+                                                            "C3":  "ANGELO",
+                                                            "D3":  "0",
+                                                            "E3":  "NA ",
+                                                            "F3":  "FLANGE DE MANCAL 1619 P11098",
+                                                            "G3":  "MEDIA",
+                                                            "H3":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I3":  "07 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "757",
+                                                            "B4":  "45964",
+                                                            "C4":  "ANGELO",
+                                                            "D4":  "0",
+                                                            "E4":  "NA ",
+                                                            "F4":  "ROLAMENTO DE ESFERAS 1619 P07440 - 28 - 1",
+                                                            "G4":  "MEDIA",
+                                                            "H4":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I4":  "07 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "757",
+                                                            "B5":  "45964",
+                                                            "C5":  "ANGELO",
+                                                            "D5":  "0",
+                                                            "E5":  "NA ",
+                                                            "F5":  "ROLAMENTO FIXO 1619 P08829",
+                                                            "G5":  "MEDIA",
+                                                            "H5":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I5":  "07 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "757",
+                                                            "B6":  "45964",
+                                                            "C6":  "ANGELO",
+                                                            "D6":  "0",
+                                                            "E6":  "NA ",
+                                                            "F6":  "DISCO DE COBERTURA 1619 P09390",
+                                                            "G6":  "MEDIA",
+                                                            "H6":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I6":  "07 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "757",
+                                                            "B7":  "45964",
+                                                            "C7":  "ANGELO",
+                                                            "D7":  "0",
+                                                            "E7":  "NA ",
+                                                            "F7":  "TAMPA DE CARCAÃ‡A 1619 P13557 ",
+                                                            "G7":  "MEDIA",
+                                                            "H7":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I7":  "05 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "757",
+                                                            "B8":  "45964",
+                                                            "C8":  "ANGELO",
+                                                            "D8":  "0",
+                                                            "E8":  "NA ",
+                                                            "F8":  "ADAPTADOR RSV 06,5 - 06,9X95MM - 2600 703012",
+                                                            "G8":  "MEDIA",
+                                                            "H8":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I8":  "07 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "757",
+                                                            "B9":  "45964",
+                                                            "C9":  "ANGELO",
+                                                            "D9":  "0",
+                                                            "E9":  "NA ",
+                                                            "F9":  "PARAFUSO LONTICULAR TORX 4X30 - 2603 490025",
+                                                            "G9":  "MEDIA",
+                                                            "H9":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I9":  "07 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "757",
+                                                            "B10":  "45964",
+                                                            "C10":  "ANGELO",
+                                                            "D10":  "0",
+                                                            "E10":  "NA ",
+                                                            "F10":  "PORCA SEXTAVADA DIN 934 - M6 - 8 - A - 2915011007",
+                                                            "G10":  "MEDIA",
+                                                            "H10":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I10":  "07 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "757",
+                                                            "B11":  "45964",
+                                                            "C11":  "ANGELO",
+                                                            "D11":  "0",
+                                                            "E11":  "NA ",
+                                                            "F11":  "CARCAÃ‡A DO MOTOR - 1619 P10959",
+                                                            "G11":  "MEDIA",
+                                                            "H11":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I11":  "07 UNIDADES "
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "757",
+                                                            "B12":  "45964",
+                                                            "C12":  "ANGELO",
+                                                            "D12":  "0",
+                                                            "E12":  "NA ",
+                                                            "F12":  "TAMPA - F000603015 ",
+                                                            "G12":  "MEDIA",
+                                                            "H12":  "MANT.LIXADEIRA 5 POL.",
+                                                            "I12":  "07 UNIDADES "
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "UNIFORME AZUL",
+                       "state":  "hidden",
+                       "dimension":  "A2:F30",
+                       "xmlRowCount":  27,
+                       "nonEmptyCellCount":  154,
+                       "firstDataRow":  2,
+                       "lastDataRow":  30,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           ""
+                                                       ],
+                       "filters":  [
+                                       "A1:G26"
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "7",
+                                                            "B2":  "ELAINE CRISTINA CARDOSO DE OLIVEIRA",
+                                                            "C2":  "ENCARREGADO DE ALMOXARIFADO I",
+                                                            "D2":  "3",
+                                                            "E2":  "G",
+                                                            "F2":  "0"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "15",
+                                                            "B3":  "MARCIA REGINA BRITES SGOBI BARBOSA",
+                                                            "C3":  "AUXILIAR DE LIMPEZA",
+                                                            "D3":  "2",
+                                                            "E3":  "G",
+                                                            "F3":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "30",
+                                                            "B4":  "GABRIELE SILVA DA COSTA",
+                                                            "C4":  "ANALISTA DE RECURSOS HUMANOS",
+                                                            "D4":  "3 - G",
+                                                            "E4":  "M",
+                                                            "F4":  "2"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "34",
+                                                            "B5":  "WADRIAN PEDRO DE SOUSA SOARES",
+                                                            "C5":  "AUXILIAR DE DEP. FINANCEIRO",
+                                                            "D5":  "2",
+                                                            "E5":  "GG",
+                                                            "F5":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "35",
+                                                            "B6":  "WAEENE JULIANE SOUZA CAIRES",
+                                                            "C6":  "AUXILIAR DE REC.HUMANOS",
+                                                            "D6":  "4",
+                                                            "E6":  "PP",
+                                                            "F6":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "36",
+                                                            "B7":  "NAIANA CLAUDIA PALMIERI MONZAN",
+                                                            "C7":  "AUXILIAR DE ALMOXARIFADO I",
+                                                            "D7":  "1",
+                                                            "E7":  "G",
+                                                            "F7":  "2"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "37",
+                                                            "B8":  "JOAO PEDRO SANTOS JERONIMO",
+                                                            "C8":  "ASSISTENTE DE COMPRAS",
+                                                            "D8":  "2",
+                                                            "E8":  "G",
+                                                            "F8":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "38",
+                                                            "B9":  "PEDRO HENRIQUE PRATES PIRES",
+                                                            "C9":  "ASSISTENTE DE TECNOLOGIA DA INFORMACAO",
+                                                            "D9":  "2",
+                                                            "E9":  "GG",
+                                                            "F9":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "52",
+                                                            "B10":  "MARILZA BRITES",
+                                                            "C10":  "AUXILIAR DE LIMPEZA",
+                                                            "D10":  "2",
+                                                            "E10":  "G",
+                                                            "F10":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "58",
+                                                            "B11":  "LUCAS DOS SANTOS BENTO",
+                                                            "C11":  "COORDENADOR DE QUALIDADE",
+                                                            "D11":  "0",
+                                                            "E11":  "GG",
+                                                            "F11":  "2"
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "80",
+                                                            "B12":  "LEANDRO SOUZA DA SILVA",
+                                                            "C12":  "ASSISTENTE PATRIMONIAL",
+                                                            "D12":  "2",
+                                                            "E12":  "G",
+                                                            "F12":  "1"
+                                                        }
+                                          },
+                                          {
+                                              "row":  13,
+                                              "cells":  {
+                                                            "A13":  "83",
+                                                            "B13":  "CONRADO PEREIRA DA SILVA NETO",
+                                                            "C13":  "TECNOLOGO NAVAL",
+                                                            "D13":  "2",
+                                                            "E13":  "G",
+                                                            "F13":  "0"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "UNIFORME PRETO",
+                       "state":  "hidden",
+                       "dimension":  "A1:D22",
+                       "xmlRowCount":  22,
+                       "nonEmptyCellCount":  66,
+                       "firstDataRow":  1,
+                       "lastDataRow":  22,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           ""
+                                                       ],
+                       "filters":  [
+                                       "A1:C1"
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "A1":  "MATRICULA",
+                                                            "B1":  "NOME",
+                                                            "C1":  "FUNÃ‡ÃƒO"
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "6",
+                                                            "B2":  "ANGELO MARCOS BRAGA DA SILVEIR",
+                                                            "C2":  "SUPERVISOR DE MANUTENCAO"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "7",
+                                                            "B3":  "ELAINE CRISTINA CARDOSO DE OLI",
+                                                            "C3":  "ENCARREGADO DE ALMOXARIFADO I"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "11",
+                                                            "B4":  "GIL ISSAMU SUTO BECK",
+                                                            "C4":  "GERENTE FINANCEIRO"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "17",
+                                                            "B5":  "JAELSON DE SOUZA ARAUJO",
+                                                            "C5":  "ENCARREGADO DE MONTAGEM II"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "20",
+                                                            "B6":  "ANTONIO CARLOS REIS TAVARES",
+                                                            "C6":  "ENCARREGADO DE SOLDA III"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "25",
+                                                            "B7":  "CRISTIANO PAULINO MAIA",
+                                                            "C7":  "ENCARREGADO CORTE DOBRA II"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "26",
+                                                            "B8":  "VINICIUS DA SILVA OLIVEIRA",
+                                                            "C8":  "ENCARREGADO JATEAMENTO PINTURA III"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "30",
+                                                            "B9":  "GABRIELE SILVA DA COSTA",
+                                                            "C9":  "ANALISTA DE RECURSOS HUMANOS"
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "34",
+                                                            "B10":  "WADRIAN PEDRO DE SOUSA SOARES",
+                                                            "C10":  "AUXILIAR DE DEP. FINANCEIRO"
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "35",
+                                                            "B11":  "WAEENE JULIANE SOUZA CAIRES",
+                                                            "C11":  "AUXILIAR DE REC.HUMANOS"
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "37",
+                                                            "B12":  "JOAO PEDRO SANTOS JERONIMO",
+                                                            "C12":  "ASSISTENTE DE COMPRAS"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "BANCO DE DADOS",
+                       "state":  "hidden",
+                       "dimension":  "A1:B7",
+                       "xmlRowCount":  7,
+                       "nonEmptyCellCount":  12,
+                       "firstDataRow":  1,
+                       "lastDataRow":  7,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           ""
+                                                       ],
+                       "filters":  [
+                                       ""
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "A1":  "STATUS",
+                                                            "B1":  "UNIDADE DE MEDIDA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "ENTREGUE",
+                                                            "B2":  "UNIDADES"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "ATRASADO",
+                                                            "B3":  "KG"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "EM NEGOCIAÃ‡ÃƒO",
+                                                            "B4":  "METROS"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "PEDIDO REALIZADO",
+                                                            "B5":  "PACOTE/CAIXA"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "EM TRANSPORTE"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "AGUARDANDO AQUISIÃ‡ÃƒO"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "Planilha1",
+                       "state":  "hidden",
+                       "dimension":  "A1:E47",
+                       "xmlRowCount":  47,
+                       "nonEmptyCellCount":  0,
+                       "firstDataRow":  null,
+                       "lastDataRow":  null,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           ""
+                                                       ],
+                       "filters":  [
+                                       ""
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+
+                                      ]
+                   },
+                   {
+                       "name":  "Controle",
+                       "state":  "hidden",
+                       "dimension":  "A1:L3318",
+                       "xmlRowCount":  3318,
+                       "nonEmptyCellCount":  29300,
+                       "firstDataRow":  3,
+                       "lastDataRow":  3307,
+                       "formulas":  115,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           "C4:C1048576"
+                                                       ],
+                       "filters":  [
+                                       "A4:J3318"
+                                   ],
+                       "mergedCells":  [
+                                           "J3210:J3211",
+                                           "A3:J3",
+                                           "A1:J2"
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "SOLICITAÃ‡ÃƒO DE COMPRAS"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "SC",
+                                                            "B4":  "DATA SOLICITAÃ‡ÃƒO",
+                                                            "C4":  "CRITICIDADE",
+                                                            "D4":  "SOLICITANTE",
+                                                            "E4":  "QTD",
+                                                            "F4":  "UN MEDIDA",
+                                                            "G4":  "CÃ“DIGO",
+                                                            "H4":  "DESCRIÃ‡ÃƒO",
+                                                            "I4":  "UTILIZAÃ‡ÃƒO",
+                                                            "J4":  "OBSERVAÃ‡ÃƒO"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "42",
+                                                            "B5":  "42377",
+                                                            "C5":  "-",
+                                                            "D5":  "Almoxarifado",
+                                                            "E5":  "69kg",
+                                                            "G5":  "9372",
+                                                            "H5":  "CO2",
+                                                            "I5":  "Consumo de solda - gas",
+                                                            "J5":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "42",
+                                                            "B6":  "42377",
+                                                            "C6":  "-",
+                                                            "D6":  "Almoxarifado",
+                                                            "E6":  "50MÂ³ ",
+                                                            "G6":  "9377",
+                                                            "H6":  "OXIGENIO",
+                                                            "I6":  "Consumo de solda - gas",
+                                                            "J6":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "42",
+                                                            "B7":  "42377",
+                                                            "C7":  "-",
+                                                            "D7":  "Almoxarifado",
+                                                            "E7":  "2",
+                                                            "G7":  "860",
+                                                            "H7":  "GÃS GLP P20",
+                                                            "I7":  "Empilhadeira",
+                                                            "J7":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "43",
+                                                            "B8":  "42380",
+                                                            "C8":  "-",
+                                                            "D8":  "Almoxarifado",
+                                                            "E8":  "16",
+                                                            "G8":  "7981",
+                                                            "H8":  "Cadeado 45/70mm ",
+                                                            "I8":  "Consumo Geral ProduÃ§Ã£o",
+                                                            "J8":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "43",
+                                                            "B9":  "42380",
+                                                            "C9":  "-",
+                                                            "D9":  "Almoxarifado",
+                                                            "E9":  "10",
+                                                            "G9":  "825",
+                                                            "H9":  "Cadeado CR35",
+                                                            "I9":  "Consumo Geral ProduÃ§Ã£o",
+                                                            "J9":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  10,
+                                              "cells":  {
+                                                            "A10":  "43",
+                                                            "B10":  "42380",
+                                                            "C10":  "-",
+                                                            "D10":  "Almoxarifado",
+                                                            "E10":  "10",
+                                                            "G10":  "4950",
+                                                            "H10":  "Cadeado CR25",
+                                                            "I10":  "Consumo Geral ProduÃ§Ã£o",
+                                                            "J10":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  11,
+                                              "cells":  {
+                                                            "A11":  "43",
+                                                            "B11":  "42380",
+                                                            "C11":  "-",
+                                                            "D11":  "Almoxarifado",
+                                                            "E11":  "10",
+                                                            "G11":  "363",
+                                                            "H11":  "Cadeado CR40",
+                                                            "I11":  "Consumo Geral ProduÃ§Ã£o",
+                                                            "J11":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  12,
+                                              "cells":  {
+                                                            "A12":  "43",
+                                                            "B12":  "42380",
+                                                            "C12":  "-",
+                                                            "D12":  "Almoxarifado",
+                                                            "E12":  "10",
+                                                            "G12":  "1167",
+                                                            "H12":  "Cadeado CR50",
+                                                            "I12":  "Consumo Geral ProduÃ§Ã£o",
+                                                            "J12":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  13,
+                                              "cells":  {
+                                                            "A13":  "43",
+                                                            "B13":  "42380",
+                                                            "C13":  "-",
+                                                            "D13":  "Almoxarifado",
+                                                            "E13":  "1",
+                                                            "G13":  "produto novo",
+                                                            "H13":  "Inseticida de Tomada",
+                                                            "I13":  "Material Limpeza",
+                                                            "J13":  "Estaleiro"
+                                                        }
+                                          },
+                                          {
+                                              "row":  14,
+                                              "cells":  {
+                                                            "A14":  "43",
+                                                            "B14":  "42380",
+                                                            "C14":  "-",
+                                                            "D14":  "Almoxarifado",
+                                                            "E14":  "5",
+                                                            "G14":  "6295",
+                                                            "H14":  "Inseticida Spray",
+                                                            "I14":  "Material Limpeza",
+                                                            "J14":  "Estaleiro"
+                                                        }
+                                          }
+                                      ]
+                   },
+                   {
+                       "name":  "Falta comprar",
+                       "state":  "hidden",
+                       "dimension":  "A1:I24",
+                       "xmlRowCount":  24,
+                       "nonEmptyCellCount":  79,
+                       "firstDataRow":  1,
+                       "lastDataRow":  9,
+                       "formulas":  0,
+                       "brokenRefs":  [
+
+                                      ],
+                       "dataValidations":  [
+                                               {
+                                                   "sqref":  "",
+                                                   "type":  "",
+                                                   "formula1":  ""
+                                               }
+                                           ],
+                       "conditionalFormattingRanges":  [
+                                                           "C1:C24"
+                                                       ],
+                       "filters":  [
+                                       "A1:H24"
+                                   ],
+                       "mergedCells":  [
+                                           ""
+                                       ],
+                       "farCells":  [
+
+                                    ],
+                       "sampleRows":  [
+                                          {
+                                              "row":  1,
+                                              "cells":  {
+                                                            "A1":  "SC",
+                                                            "B1":  "DATA SOLICITAÃ‡ÃƒO",
+                                                            "C1":  "CRITICIDADE",
+                                                            "D1":  "SOLICITANTE",
+                                                            "E1":  "QTD",
+                                                            "F1":  "CÃ“DIGO",
+                                                            "G1":  "DESCRIÃ‡ÃƒO",
+                                                            "H1":  "UTILIZAÃ‡ÃƒO"
+                                                        }
+                                          },
+                                          {
+                                              "row":  2,
+                                              "cells":  {
+                                                            "A2":  "548",
+                                                            "B2":  "43167",
+                                                            "C2":  "MÃ©dia",
+                                                            "D2":  "CHRISTYANE",
+                                                            "E2":  "2",
+                                                            "F2":  "380",
+                                                            "G2":  "BROCA AR 4MM  DIN338 - IRWIN  ",
+                                                            "H2":  "REPOSICAO ESTOQUE",
+                                                            "I2":  "Agrometal"
+                                                        }
+                                          },
+                                          {
+                                              "row":  3,
+                                              "cells":  {
+                                                            "A3":  "547",
+                                                            "B3":  "43167",
+                                                            "C3":  "MÃ©dia",
+                                                            "D3":  "CHRISTYANE",
+                                                            "E3":  "200",
+                                                            "F3":  "3244",
+                                                            "G3":  "DIESEL COMUM",
+                                                            "H3":  "TITAN",
+                                                            "I3":  "Faltam 100 lts"
+                                                        }
+                                          },
+                                          {
+                                              "row":  4,
+                                              "cells":  {
+                                                            "A4":  "546",
+                                                            "B4":  "43165",
+                                                            "C4":  "MÃ©dia",
+                                                            "D4":  "CHRISTYANE",
+                                                            "E4":  "5",
+                                                            "F4":  "6295",
+                                                            "G4":  "INSETICIDA AEROSOL",
+                                                            "H4":  "REPOSICAO ESTOQUE"
+                                                        }
+                                          },
+                                          {
+                                              "row":  5,
+                                              "cells":  {
+                                                            "A5":  "546",
+                                                            "B5":  "43165",
+                                                            "C5":  "alta",
+                                                            "D5":  "CHRISTYANE",
+                                                            "E5":  "50",
+                                                            "F5":  "959",
+                                                            "G5":  "LUVA DE VAQUETA",
+                                                            "H5":  "REPOSICAO ESTOQUE",
+                                                            "I5":  "Luvas Pina"
+                                                        }
+                                          },
+                                          {
+                                              "row":  6,
+                                              "cells":  {
+                                                            "A6":  "546",
+                                                            "B6":  "43165",
+                                                            "C6":  "MÃ©dia",
+                                                            "D6":  "CHRISTYANE",
+                                                            "E6":  "5",
+                                                            "F6":  "7436",
+                                                            "G6":  "CADEADO 45MM",
+                                                            "H6":  "REPOSICAO ESTOQUE",
+                                                            "I6":  "Agrometal"
+                                                        }
+                                          },
+                                          {
+                                              "row":  7,
+                                              "cells":  {
+                                                            "A7":  "549",
+                                                            "B7":  "43168",
+                                                            "C7":  "mÃ©dia",
+                                                            "D7":  "ANGELO-ELETRECISTA",
+                                                            "E7":  "3",
+                                                            "F7":  "1108",
+                                                            "G7":  "TOMADA SOBREPOR 3P+T 32AMP. STECK\nVERMELHA",
+                                                            "H7":  "BOMBAS NOVAS",
+                                                            "I7":  "seneque"
+                                                        }
+                                          },
+                                          {
+                                              "row":  8,
+                                              "cells":  {
+                                                            "A8":  "549",
+                                                            "B8":  "43168",
+                                                            "C8":  "mÃ©dia",
+                                                            "D8":  "CHRISTYANE",
+                                                            "E8":  "40",
+                                                            "F8":  "4950",
+                                                            "G8":  "CADEADO CR 25MM                                                                                     ",
+                                                            "H8":  "ARMARIO DE CELULARES",
+                                                            "I8":  "Agrometal"
+                                                        }
+                                          },
+                                          {
+                                              "row":  9,
+                                              "cells":  {
+                                                            "A9":  "542",
+                                                            "B9":  "43130",
+                                                            "C9":  "MÃ©dia",
+                                                            "D9":  "RAIMUNDO",
+                                                            "E9":  "7",
+                                                            "F9":  "11007",
+                                                            "G9":  "VALVULA ESCOAMENTO LAVATORIO",
+                                                            "H9":  "REPOSICAO PIAS REFEITORIO",
+                                                            "I9":  "Pecuarista"
+                                                        }
+                                          }
+                                      ]
+                   }
+               ]
+}

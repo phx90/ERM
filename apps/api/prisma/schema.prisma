@@ -1,0 +1,371 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  COMPRAS
+  SOLICITANTE
+  CONSULTA
+}
+
+enum Criticality {
+  BAIXA
+  MEDIA
+  ALTA
+}
+
+enum PurchaseOrderStatus {
+  RASCUNHO
+  EMITIDA
+  PARCIAL
+  RECEBIDA
+  CANCELADA
+}
+
+enum StockMovementOrigin {
+  IMPORTACAO
+  AJUSTE
+  ENTREGA
+}
+
+model Organization {
+  id        String            @id @default(uuid())
+  name      String
+  cnpj      String?
+  settings  Json              @default("{}")
+  createdAt DateTime          @default(now())
+  users     User[]
+  products  Product[]
+  requests  PurchaseRequest[]
+}
+
+model User {
+  id                  String            @id @default(uuid())
+  organizationId      String
+  organization        Organization      @relation(fields: [organizationId], references: [id])
+  name                String
+  login               String
+  passwordHash        String
+  jobTitle            String?
+  departmentId        String?
+  department          Department?       @relation(fields: [departmentId], references: [id])
+  role                Role
+  active              Boolean           @default(true)
+  mustChangePassword  Boolean           @default(true)
+  failedLoginAttempts Int               @default(0)
+  lockedUntil         DateTime?
+  lastAccessAt        DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  deletedAt           DateTime?
+  sessions            Session[]
+  createdRequests     PurchaseRequest[] @relation("RequestCreatedBy")
+  updatedRequests     PurchaseRequest[] @relation("RequestUpdatedBy")
+  auditLogs           AuditLog[]
+
+  @@unique([organizationId, login])
+}
+
+model Session {
+  id               String    @id @default(uuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokenHash String
+  ipAddress        String?
+  userAgent        String?
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime  @default(now())
+}
+
+model Department {
+  id             String            @id @default(uuid())
+  organizationId String
+  name           String
+  normalizedName String
+  active         Boolean           @default(true)
+  users          User[]
+  requests       PurchaseRequest[]
+
+  @@unique([organizationId, normalizedName])
+}
+
+model Project {
+  id             String            @id @default(uuid())
+  organizationId String
+  code           String
+  name           String
+  active         Boolean           @default(true)
+  requests       PurchaseRequest[]
+
+  @@unique([organizationId, code])
+}
+
+model Product {
+  id                 String                @id @default(uuid())
+  organizationId     String
+  organization       Organization          @relation(fields: [organizationId], references: [id])
+  code               String
+  genericDescription String
+  type               String?
+  unit               String?
+  productGroup       String?
+  socpCode           String?
+  stockBalance       Decimal               @default(0) @db.Decimal(15, 3)
+  projectCode        String?
+  unitCost           Decimal?              @db.Decimal(15, 4)
+  note               String?
+  ca                 String?
+  minimumStock       Decimal?              @db.Decimal(15, 3)
+  active             Boolean               @default(true)
+  lastSyncedAt       DateTime?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  requestItems       PurchaseRequestItem[]
+  movements          StockMovement[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, genericDescription])
+}
+
+model RequestStatus {
+  id             String                @id @default(uuid())
+  organizationId String
+  code           String
+  label          String
+  color          String
+  terminal       Boolean               @default(false)
+  active         Boolean               @default(true)
+  items          PurchaseRequestItem[]
+
+  @@unique([organizationId, code])
+}
+
+model PurchaseRequest {
+  id                String                @id @default(uuid())
+  organizationId    String
+  organization      Organization          @relation(fields: [organizationId], references: [id])
+  number            String
+  requestDate       DateTime
+  requesterId       String?
+  departmentId      String?
+  department        Department?           @relation(fields: [departmentId], references: [id])
+  projectId         String?
+  project           Project?              @relation(fields: [projectId], references: [id])
+  requesterOriginal String?
+  aggregateStatus   String
+  notes             String?
+  createdById       String
+  createdBy         User                  @relation("RequestCreatedBy", fields: [createdById], references: [id])
+  updatedById       String
+  updatedBy         User                  @relation("RequestUpdatedBy", fields: [updatedById], references: [id])
+  version           Int                   @default(1)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  deletedAt         DateTime?
+  items             PurchaseRequestItem[]
+  attachments       Attachment[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId, requestDate])
+}
+
+model PurchaseRequestItem {
+  id                String               @id @default(uuid())
+  requestId         String
+  request           PurchaseRequest      @relation(fields: [requestId], references: [id])
+  productId         String?
+  product           Product?             @relation(fields: [productId], references: [id])
+  manualCode        String?
+  description       String
+  quantity          Decimal              @db.Decimal(15, 3)
+  unit              String
+  stockSnapshot     Decimal?             @db.Decimal(15, 3)
+  criticality       Criticality
+  application       String?
+  note              String?
+  statusId          String
+  status            RequestStatus        @relation(fields: [statusId], references: [id])
+  buyerId           String?
+  requestedQuantity Decimal              @db.Decimal(15, 3)
+  purchasedQuantity Decimal              @default(0) @db.Decimal(15, 3)
+  deliveredQuantity Decimal              @default(0) @db.Decimal(15, 3)
+  version           Int                  @default(1)
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  deletedAt         DateTime?
+  allocations       PurchaseAllocation[]
+  statusHistory     StatusHistory[]
+}
+
+model Supplier {
+  id             String          @id @default(uuid())
+  organizationId String
+  legalName      String
+  tradeName      String?
+  normalizedName String
+  cnpj           String?
+  contact        String?
+  phone          String?
+  email          String?
+  note           String?
+  active         Boolean         @default(true)
+  orders         PurchaseOrder[]
+
+  @@unique([organizationId, normalizedName])
+}
+
+model PurchaseOrder {
+  id             String              @id @default(uuid())
+  organizationId String
+  number         String
+  supplierId     String
+  supplier       Supplier            @relation(fields: [supplierId], references: [id])
+  buyerId        String
+  acquiredAt     DateTime?
+  expectedAt     DateTime?
+  status         PurchaseOrderStatus @default(RASCUNHO)
+  note           String?
+  totalValue     Decimal?            @db.Decimal(15, 2)
+  version        Int                 @default(1)
+  deletedAt      DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  items          PurchaseOrderItem[]
+  deliveries     Delivery[]
+
+  @@unique([organizationId, number])
+}
+
+model PurchaseOrderItem {
+  id            String               @id @default(uuid())
+  orderId       String
+  order         PurchaseOrder        @relation(fields: [orderId], references: [id])
+  description   String
+  quantity      Decimal              @db.Decimal(15, 3)
+  unitPrice     Decimal?             @db.Decimal(15, 4)
+  allocations   PurchaseAllocation[]
+  deliveryItems DeliveryItem[]
+}
+
+model PurchaseAllocation {
+  id            String              @id @default(uuid())
+  requestItemId String
+  requestItem   PurchaseRequestItem @relation(fields: [requestItemId], references: [id])
+  orderItemId   String
+  orderItem     PurchaseOrderItem   @relation(fields: [orderItemId], references: [id])
+  quantity      Decimal             @db.Decimal(15, 3)
+
+  @@unique([requestItemId, orderItemId])
+}
+
+model Delivery {
+  id           String         @id @default(uuid())
+  orderId      String
+  order        PurchaseOrder  @relation(fields: [orderId], references: [id])
+  deliveredAt  DateTime
+  receivedById String
+  note         String?
+  partial      Boolean
+  createdAt    DateTime       @default(now())
+  items        DeliveryItem[]
+  attachments  Attachment[]
+}
+
+model DeliveryItem {
+  id          String            @id @default(uuid())
+  deliveryId  String
+  delivery    Delivery          @relation(fields: [deliveryId], references: [id])
+  orderItemId String
+  orderItem   PurchaseOrderItem @relation(fields: [orderItemId], references: [id])
+  quantity    Decimal           @db.Decimal(15, 3)
+}
+
+model StockMovement {
+  id              String              @id @default(uuid())
+  productId       String
+  product         Product             @relation(fields: [productId], references: [id])
+  previousBalance Decimal             @db.Decimal(15, 3)
+  newBalance      Decimal             @db.Decimal(15, 3)
+  origin          StockMovementOrigin
+  userId          String
+  importBatchId   String?
+  createdAt       DateTime            @default(now())
+}
+
+model StatusHistory {
+  id             String              @id @default(uuid())
+  requestItemId  String
+  requestItem    PurchaseRequestItem @relation(fields: [requestItemId], references: [id])
+  previousStatus String?
+  newStatus      String
+  userId         String
+  note           String?
+  createdAt      DateTime            @default(now())
+}
+
+model AuditLog {
+  id             String   @id @default(uuid())
+  organizationId String
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id])
+  action         String
+  entity         String
+  entityId       String
+  requestNumber  String?
+  before         Json?
+  after          Json?
+  changedFields  String[]
+  ipAddress      String?
+  userAgent      String?
+  correlationId  String
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId, createdAt])
+}
+
+model ImportBatch {
+  id             String    @id @default(uuid())
+  organizationId String
+  fileName       String
+  fileHash       String
+  status         String
+  summary        Json
+  issues         Json
+  createdById    String
+  createdAt      DateTime  @default(now())
+  confirmedAt    DateTime?
+
+  @@unique([organizationId, fileHash])
+}
+
+model Attachment {
+  id           String           @id @default(uuid())
+  requestId    String?
+  request      PurchaseRequest? @relation(fields: [requestId], references: [id])
+  deliveryId   String?
+  delivery     Delivery?        @relation(fields: [deliveryId], references: [id])
+  originalName String
+  storageName  String
+  mimeType     String
+  size         Int
+  sha256       String
+  createdAt    DateTime         @default(now())
+}
+
+model ReportGeneration {
+  id             String   @id @default(uuid())
+  organizationId String
+  type           String
+  fileName       String
+  filters        Json
+  createdById    String
+  createdAt      DateTime @default(now())
+}

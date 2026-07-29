@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-compras}
+      POSTGRES_USER: ${POSTGRES_USER:-compras}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD}
+      TZ: America/Sao_Paulo
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"], interval: 10s, timeout: 5s, retries: 10 }
+    networks: [internal]
+  api:
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-compras}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-compras}?schema=public
+      EXCEL_TEMPLATE_PATH: /app/templates/SOLICITACAO_DE_COMPRA_ERT_ERM.xlsx
+      REPORTS_PATH: /app/reports
+      ATTACHMENTS_PATH: /app/attachments
+      TZ: America/Sao_Paulo
+    volumes: [reports:/app/reports, attachments:/app/attachments, backups:/app/backups]
+    depends_on: { postgres: { condition: service_healthy } }
+    healthcheck: { test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)process.exit(1)})"], interval: 15s, timeout: 5s, retries: 10 }
+    networks: [internal]
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    restart: unless-stopped
+    ports: ["${APP_PORT:-8080}:80"]
+    depends_on: { api: { condition: service_healthy } }
+    healthcheck: { test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/health >/dev/null"], interval: 15s, timeout: 5s, retries: 10 }
+    networks: [internal]
+volumes:
+  postgres_data:
+  reports:
+  attachments:
+  backups:
+networks:
+  internal:
+    driver: bridge

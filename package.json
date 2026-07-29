@@ -1,0 +1,24 @@
+{
+  "name": "compras-ert-erm",
+  "private": true,
+  "packageManager": "pnpm@10.13.1",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2"
+    ,"typescript-eslint": "^8.46.4"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,md,yml,yaml}": "prettier --write"
+  }
+}

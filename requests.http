@@ -1,0 +1,16 @@
+@base=http://localhost:8080/api
+
+### Login
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{"login":"admin","password":"{{$dotenv ADMIN_PASSWORD}}"}
+
+### Dashboard
+GET {{base}}/dashboard
+
+### Solicitações
+GET {{base}}/requests?page=1
+
+### Relatório
+GET {{base}}/reports/consolidated?year=2026

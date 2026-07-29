@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+coverage/
+reports/*
+!reports/.gitkeep
+attachments/*
+!attachments/.gitkeep
+backups/*
+!backups/.gitkeep
+*.log
+playwright-report/
+test-results/
+outputs/
+*.tsbuildinfo
