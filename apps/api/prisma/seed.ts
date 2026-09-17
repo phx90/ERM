@@ -20,6 +20,7 @@ for (const status of [
 }});
 const users: Array<[string, string, Role]> = [
   [process.env.ADMIN_LOGIN || "admin", process.env.ADMIN_NAME || "Administrador", Role.ADMIN],
+  ["almoxarifado", "Almoxarifado", Role.ALMOXARIFADO],
   ["compras", "Usuário Compras", Role.COMPRAS], ["solicitante", "Usuário Solicitante", Role.SOLICITANTE], ["consulta", "Usuário Consulta", Role.CONSULTA]
 ];
 for (const [login, name, role] of users) await db.user.upsert({ where: { organizationId_login: { organizationId: organization.id, login } }, update: {}, create: {

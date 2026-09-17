@@ -40,7 +40,7 @@ export class DashboardController {
     const statuses = groupedStatuses.map(group => ({ ...statusMap.get(group.statusId), count: group._count })).filter(status => status.label);
     const pendingItems = statuses.filter(status => !status.terminal && status.code !== "CANCELADO").reduce((sum, status) => sum + status.count, 0);
     const overdueItems = statuses.find(status => status.code === "ATRASADO")?.count || 0;
-    const lowStock = productsForStock.filter(product => product.minimumStock != null && Number(product.stockBalance) < Number(product.minimumStock)).length;
+    const lowStock = productsForStock.filter(product => Number(product.stockBalance) <= 0 || (product.minimumStock != null && Number(product.stockBalance) <= Number(product.minimumStock))).length;
     const requested = Number(quantities._sum.requestedQuantity || 0);
     const delivered = Number(quantities._sum.deliveredQuantity || 0);
     const monthly = Array.from({ length: 12 }, (_, month) => ({ month, requests: 0, items: 0 }));

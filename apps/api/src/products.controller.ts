@@ -1,3 +1,4 @@
+import { quantity } from "./stock.validation.js";
 import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
 import type { Request } from "express";
 import { PrismaService } from "./prisma.service.js";
@@ -17,7 +18,7 @@ type ProductInput = {
   unitCost?: number;
   note?: string;
   ca?: string;
-  minimumStock?: number;
+  minimumStock?: number | null;
 };
 
 @Controller("products")
@@ -43,7 +44,7 @@ export class ProductsController {
       active: true,
       ...(group ? { productGroup: group } : {}),
       ...(stock === "zero" ? { stockBalance: 0 } : {}),
-      ...(stock === "below" ? { minimumStock: { not: null } } : {}),
+      ...(stock === "below" ? { stockBalance: { lte: this.db.product.fields.minimumStock } } : {}),
       ...(q.trim() ? { OR: [
         { code: { contains: q.trim(), mode: "insensitive" as const } },
         { genericDescription: { contains: q.trim(), mode: "insensitive" as const } }
@@ -71,20 +72,24 @@ export class ProductsController {
 
   @Patch(":id")
   async update(@Req() req: AuthedRequest, @Param("id") id: string, @Body() input: ProductInput) {
-    if (!["ADMIN", "COMPRAS"].includes(req.user.role)) throw new BadRequestException("Perfil sem permissão para editar produtos.");
-    const before = await this.db.product.findFirstOrThrow({ where: { id, organizationId: req.user.organizationId, active: true } });
-    const code = String(input.code || before.code).trim();
-    const description = String(input.genericDescription || before.genericDescription).trim();
-    const duplicate = await this.db.product.findFirst({ where: { organizationId: req.user.organizationId, code, id: { not: id } } });
-    if (duplicate) throw new BadRequestException("Já existe outro produto com este código.");
+    if (!["ADMIN", "COMPRAS", "ALMOXARIFADO"].includes(req.user.role)) throw new BadRequestException("Perfil sem permissão para editar produtos.");
+    if (input.stockBalance !== undefined) throw new BadRequestException("Altere o saldo pelo módulo de estoque.");
+    if (input.minimumStock != null) quantity(input.minimumStock);
     return this.db.$transaction(async tx => {
+      await tx.$queryRaw`SELECT id FROM "Product" WHERE id = ${id} AND "organizationId" = ${req.user.organizationId} FOR UPDATE`;
+      const before = await tx.product.findFirstOrThrow({ where: { id, organizationId: req.user.organizationId, active: true } });
+      const code = String(input.code || before.code).trim();
+      const description = String(input.genericDescription || before.genericDescription).trim();
+      const duplicate = await tx.product.findFirst({ where: { organizationId: req.user.organizationId, code, id: { not: id } } });
+      if (duplicate) throw new BadRequestException("Já existe outro produto com este código.");
+      if (input.unit !== undefined && !input.unit?.trim()) throw new BadRequestException("Informe a unidade do produto.");
+      if (input.unit && input.unit.trim().toUpperCase() !== before.unit && await tx.stockMovement.count({ where: { productId: id } })) throw new BadRequestException("A unidade não pode mudar após movimentações de estoque.");
       const product = await tx.product.update({ where: { id }, data: {
-        code, genericDescription: description, type: input.type?.trim() || null, unit: input.unit?.trim().toUpperCase() || "UN",
-        productGroup: input.productGroup?.trim() || null, socpCode: input.socpCode?.trim() || null,
-        stockBalance: input.stockBalance === undefined ? before.stockBalance : Number(input.stockBalance),
-        projectCode: input.projectCode?.trim() || null, unitCost: input.unitCost === undefined ? null : Number(input.unitCost),
-        note: input.note?.trim() || null, ca: input.ca?.trim() || null,
-        minimumStock: input.minimumStock === undefined ? null : Number(input.minimumStock)
+        code, genericDescription: description, type: input.type === undefined ? undefined : input.type?.trim() || null, unit: input.unit === undefined ? undefined : input.unit.trim().toUpperCase(),
+        productGroup: input.productGroup === undefined ? undefined : input.productGroup?.trim() || null, socpCode: input.socpCode === undefined ? undefined : input.socpCode?.trim() || null,
+        projectCode: input.projectCode === undefined ? undefined : input.projectCode?.trim() || null, unitCost: input.unitCost === undefined ? undefined : input.unitCost === null ? null : Number(input.unitCost),
+        note: input.note === undefined ? undefined : input.note?.trim() || null, ca: input.ca === undefined ? undefined : input.ca?.trim() || null,
+        minimumStock: input.minimumStock === undefined ? undefined : input.minimumStock === null ? null : quantity(input.minimumStock)
       }});
       await tx.auditLog.create({ data: {
         organizationId: req.user.organizationId, userId: req.user.sub, action: "UPDATE", entity: "Product",
@@ -97,7 +102,9 @@ export class ProductsController {
 
   @Post()
   async create(@Req() req: AuthedRequest, @Body() input: ProductInput) {
-    if (!["ADMIN", "COMPRAS"].includes(req.user.role)) throw new BadRequestException("Perfil sem permissão para cadastrar produtos.");
+    if (!["ADMIN", "COMPRAS", "ALMOXARIFADO"].includes(req.user.role)) throw new BadRequestException("Perfil sem permissão para cadastrar produtos.");
+    if (input.stockBalance !== undefined && input.stockBalance !== 0) throw new BadRequestException("Registre o saldo inicial pelo módulo de estoque.");
+    if (input.minimumStock != null) quantity(input.minimumStock);
     const code = String(input.code || "").trim();
     const description = String(input.genericDescription || "").trim();
     if (!code || !description) throw new BadRequestException("Código e descrição são obrigatórios.");
@@ -112,12 +119,12 @@ export class ProductsController {
         unit: input.unit?.trim().toUpperCase() || "UN",
         productGroup: input.productGroup?.trim() || null,
         socpCode: input.socpCode?.trim() || null,
-        stockBalance: Number(input.stockBalance || 0),
+        stockBalance: 0,
         projectCode: input.projectCode?.trim() || null,
         unitCost: input.unitCost === undefined ? null : Number(input.unitCost),
         note: input.note?.trim() || null,
         ca: input.ca?.trim() || null,
-        minimumStock: input.minimumStock === undefined ? null : Number(input.minimumStock),
+        minimumStock: input.minimumStock == null ? null : quantity(input.minimumStock),
         lastSyncedAt: new Date()
       }});
       await tx.auditLog.create({ data: {

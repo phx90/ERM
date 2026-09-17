@@ -13,6 +13,7 @@ enum Role {
   COMPRAS
   SOLICITANTE
   CONSULTA
+  ALMOXARIFADO
 }
 
 enum Criticality {
@@ -30,6 +31,9 @@ enum PurchaseOrderStatus {
 }
 
 enum StockMovementOrigin {
+  ENTRADA
+  SAIDA
+  INICIAL
   IMPORTACAO
   AJUSTE
   ENTREGA
@@ -118,6 +122,7 @@ model Product {
   unit               String?
   productGroup       String?
   socpCode           String?
+  stockVersion       Int                   @default(0)
   stockBalance       Decimal               @default(0) @db.Decimal(15, 3)
   projectCode        String?
   unitCost           Decimal?              @db.Decimal(15, 4)
@@ -297,6 +302,12 @@ model StockMovement {
   origin          StockMovementOrigin
   userId          String
   importBatchId   String?
+  note            String?
+  reference       String?
+  actorName       String?
+  operationId     String?             @unique
+
+  @@index([productId, createdAt])
   createdAt       DateTime            @default(now())
 }
 

@@ -1,3 +1,4 @@
+﻿import { StockController } from "./stock.controller.js";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
@@ -16,7 +17,7 @@ import { ProductsController } from "./products.controller.js";
     JwtModule.register({ global: true, secret: process.env.JWT_ACCESS_SECRET }),
     LoggerModule.forRoot({ pinoHttp: { redact: ["req.headers.cookie", "req.body.password"], genReqId: req => String(req.headers["x-correlation-id"] || crypto.randomUUID()) } })
   ],
-  controllers: [AuthController, RequestsController, DashboardController, ReportsController, ProductsController],
+  controllers: [StockController, AuthController, RequestsController, DashboardController, ReportsController, ProductsController],
   providers: [PrismaService, AuthGuard]
 })
 export class AppModule {}

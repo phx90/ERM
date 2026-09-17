@@ -83,3 +83,7 @@ O sistema é um monólito modular offline-first, com `organizationId` para evolu
 - Porta ocupada: altere `APP_PORT`.
 
 Uso interno. Consulte [LICENSE](LICENSE) e [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Controle de estoque
+
+O módulo de estoque possui entradas, saídas, saldo inicial, ajustes auditados, mínimos e alertas. Consulte [o guia do almoxarifado](docs/ESTOQUE.md).
