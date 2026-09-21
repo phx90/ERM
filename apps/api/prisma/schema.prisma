@@ -39,42 +39,106 @@ enum StockMovementOrigin {
   ENTREGA
 }
 
+enum MaterialWithdrawalStatus {
+  PENDENTE
+  RETIRADA
+  CANCELADA
+  EXPIRADA
+}
+
 model Organization {
-  id        String            @id @default(uuid())
-  name      String
-  cnpj      String?
-  settings  Json              @default("{}")
-  createdAt DateTime          @default(now())
-  users     User[]
-  products  Product[]
-  requests  PurchaseRequest[]
+  id                          String                       @id @default(uuid())
+  name                        String
+  cnpj                        String?
+  settings                    Json                         @default("{}")
+  createdAt                   DateTime                     @default(now())
+  users                       User[]
+  products                    Product[]
+  requests                    PurchaseRequest[]
+  productRegistrationRequests ProductRegistrationRequest[]
+  materialWithdrawals         MaterialWithdrawal[]
 }
 
 model User {
-  id                  String            @id @default(uuid())
-  organizationId      String
-  organization        Organization      @relation(fields: [organizationId], references: [id])
-  name                String
-  login               String
-  passwordHash        String
-  jobTitle            String?
-  departmentId        String?
-  department          Department?       @relation(fields: [departmentId], references: [id])
-  role                Role
-  active              Boolean           @default(true)
-  mustChangePassword  Boolean           @default(true)
-  failedLoginAttempts Int               @default(0)
-  lockedUntil         DateTime?
-  lastAccessAt        DateTime?
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  deletedAt           DateTime?
-  sessions            Session[]
-  createdRequests     PurchaseRequest[] @relation("RequestCreatedBy")
-  updatedRequests     PurchaseRequest[] @relation("RequestUpdatedBy")
-  auditLogs           AuditLog[]
+  id                          String                       @id @default(uuid())
+  organizationId              String
+  organization                Organization                 @relation(fields: [organizationId], references: [id])
+  name                        String
+  login                       String
+  passwordHash                String
+  jobTitle                    String?
+  departmentId                String?
+  department                  Department?                  @relation(fields: [departmentId], references: [id])
+  role                        Role
+  active                      Boolean                      @default(true)
+  mustChangePassword          Boolean                      @default(true)
+  failedLoginAttempts         Int                          @default(0)
+  lockedUntil                 DateTime?
+  lastAccessAt                DateTime?
+  createdAt                   DateTime                     @default(now())
+  updatedAt                   DateTime                     @updatedAt
+  deletedAt                   DateTime?
+  sessions                    Session[]
+  createdRequests             PurchaseRequest[]            @relation("RequestCreatedBy")
+  updatedRequests             PurchaseRequest[]            @relation("RequestUpdatedBy")
+  auditLogs                   AuditLog[]
+  productRegistrationRequests ProductRegistrationRequest[]
+  requestedWithdrawals        MaterialWithdrawal[]         @relation("WithdrawalRequestedBy")
+  processedWithdrawals        MaterialWithdrawal[]         @relation("WithdrawalProcessedBy")
 
   @@unique([organizationId, login])
+}
+
+model ProductRegistrationRequest {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  description    String
+  unit           String
+  references     String
+  referenceLinks String[]
+  createdById    String
+  createdBy      User         @relation(fields: [createdById], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, createdAt])
+}
+
+model MaterialWithdrawal {
+  id             String                   @id @default(uuid())
+  organizationId String
+  organization   Organization             @relation(fields: [organizationId], references: [id])
+  number         String
+  requestedById  String
+  requestedBy    User                     @relation("WithdrawalRequestedBy", fields: [requestedById], references: [id])
+  purpose        String
+  destination    String
+  workSite       String
+  requestedAt    DateTime                 @default(now())
+  expiresAt      DateTime
+  status         MaterialWithdrawalStatus @default(PENDENTE)
+  processedAt    DateTime?
+  processedById  String?
+  processedBy    User?                    @relation("WithdrawalProcessedBy", fields: [processedById], references: [id])
+  canceledAt     DateTime?
+  cancelReason   String?
+  items          MaterialWithdrawalItem[]
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status, expiresAt])
+  @@index([requestedById, requestedAt])
+}
+
+model MaterialWithdrawalItem {
+  id            String             @id @default(uuid())
+  withdrawalId  String
+  withdrawal    MaterialWithdrawal @relation(fields: [withdrawalId], references: [id])
+  productId     String
+  product       Product            @relation(fields: [productId], references: [id])
+  quantity      Decimal            @db.Decimal(15, 3)
+  stockMovement StockMovement?
+
+  @@index([productId])
 }
 
 model Session {
@@ -113,28 +177,30 @@ model Project {
 }
 
 model Product {
-  id                 String                @id @default(uuid())
+  id                 String                   @id @default(uuid())
   organizationId     String
-  organization       Organization          @relation(fields: [organizationId], references: [id])
+  organization       Organization             @relation(fields: [organizationId], references: [id])
   code               String
   genericDescription String
   type               String?
   unit               String?
   productGroup       String?
   socpCode           String?
-  stockVersion       Int                   @default(0)
-  stockBalance       Decimal               @default(0) @db.Decimal(15, 3)
+  stockVersion       Int                      @default(0)
+  stockBalance       Decimal                  @default(0) @db.Decimal(15, 3)
   projectCode        String?
-  unitCost           Decimal?              @db.Decimal(15, 4)
+  unitCost           Decimal?                 @db.Decimal(15, 4)
   note               String?
   ca                 String?
-  minimumStock       Decimal?              @db.Decimal(15, 3)
-  active             Boolean               @default(true)
+  minimumStock       Decimal?                 @db.Decimal(15, 3)
+  active             Boolean                  @default(true)
   lastSyncedAt       DateTime?
-  createdAt          DateTime              @default(now())
-  updatedAt          DateTime              @updatedAt
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
   requestItems       PurchaseRequestItem[]
+  orderItems         PurchaseOrderItem[]
   movements          StockMovement[]
+  withdrawalItems    MaterialWithdrawalItem[]
 
   @@unique([organizationId, code])
   @@index([organizationId, genericDescription])
@@ -211,20 +277,35 @@ model PurchaseRequestItem {
 }
 
 model Supplier {
-  id             String          @id @default(uuid())
-  organizationId String
-  legalName      String
-  tradeName      String?
-  normalizedName String
-  cnpj           String?
-  contact        String?
-  phone          String?
-  email          String?
-  note           String?
-  active         Boolean         @default(true)
-  orders         PurchaseOrder[]
+  id                    String          @id @default(uuid())
+  organizationId        String
+  legalName             String
+  tradeName             String?
+  normalizedName        String
+  cnpj                  String?
+  stateRegistration     String?
+  municipalRegistration String?
+  contact               String?
+  phone                 String?
+  email                 String?
+  postalCode            String?
+  street                String?
+  addressNumber         String?
+  complement            String?
+  district              String?
+  city                  String?
+  state                 String?
+  country               String          @default("Brasil")
+  website               String?
+  paymentTerms          String?
+  note                  String?
+  active                Boolean         @default(true)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  orders                PurchaseOrder[]
 
   @@unique([organizationId, normalizedName])
+  @@index([organizationId, cnpj])
 }
 
 model PurchaseOrder {
@@ -236,6 +317,7 @@ model PurchaseOrder {
   buyerId        String
   acquiredAt     DateTime?
   expectedAt     DateTime?
+  carrier        String?
   status         PurchaseOrderStatus @default(RASCUNHO)
   note           String?
   totalValue     Decimal?            @db.Decimal(15, 2)
@@ -253,7 +335,10 @@ model PurchaseOrderItem {
   id            String               @id @default(uuid())
   orderId       String
   order         PurchaseOrder        @relation(fields: [orderId], references: [id])
+  productId     String?
+  product       Product?             @relation(fields: [productId], references: [id])
   description   String
+  unit          String
   quantity      Decimal              @db.Decimal(15, 3)
   unitPrice     Decimal?             @db.Decimal(15, 4)
   allocations   PurchaseAllocation[]
@@ -272,43 +357,51 @@ model PurchaseAllocation {
 }
 
 model Delivery {
-  id           String         @id @default(uuid())
-  orderId      String
-  order        PurchaseOrder  @relation(fields: [orderId], references: [id])
-  deliveredAt  DateTime
-  receivedById String
-  note         String?
-  partial      Boolean
-  createdAt    DateTime       @default(now())
-  items        DeliveryItem[]
-  attachments  Attachment[]
+  id            String         @id @default(uuid())
+  orderId       String
+  order         PurchaseOrder  @relation(fields: [orderId], references: [id])
+  deliveredAt   DateTime
+  receivedById  String
+  invoiceNumber String
+  note          String?
+  partial       Boolean
+  createdAt     DateTime       @default(now())
+  items         DeliveryItem[]
+  attachments   Attachment[]
+
+  @@unique([orderId, invoiceNumber])
 }
 
 model DeliveryItem {
-  id          String            @id @default(uuid())
-  deliveryId  String
-  delivery    Delivery          @relation(fields: [deliveryId], references: [id])
-  orderItemId String
-  orderItem   PurchaseOrderItem @relation(fields: [orderItemId], references: [id])
-  quantity    Decimal           @db.Decimal(15, 3)
+  id            String            @id @default(uuid())
+  deliveryId    String
+  delivery      Delivery          @relation(fields: [deliveryId], references: [id])
+  orderItemId   String
+  orderItem     PurchaseOrderItem @relation(fields: [orderItemId], references: [id])
+  quantity      Decimal           @db.Decimal(15, 3)
+  stockMovement StockMovement?
 }
 
 model StockMovement {
-  id              String              @id @default(uuid())
-  productId       String
-  product         Product             @relation(fields: [productId], references: [id])
-  previousBalance Decimal             @db.Decimal(15, 3)
-  newBalance      Decimal             @db.Decimal(15, 3)
-  origin          StockMovementOrigin
-  userId          String
-  importBatchId   String?
-  note            String?
-  reference       String?
-  actorName       String?
-  operationId     String?             @unique
+  id               String                  @id @default(uuid())
+  productId        String
+  product          Product                 @relation(fields: [productId], references: [id])
+  previousBalance  Decimal                 @db.Decimal(15, 3)
+  newBalance       Decimal                 @db.Decimal(15, 3)
+  origin           StockMovementOrigin
+  userId           String
+  importBatchId    String?
+  note             String?
+  reference        String?
+  actorName        String?
+  operationId      String?                 @unique
+  deliveryItemId   String?                 @unique
+  deliveryItem     DeliveryItem?           @relation(fields: [deliveryItemId], references: [id])
+  withdrawalItemId String?                 @unique
+  withdrawalItem   MaterialWithdrawalItem? @relation(fields: [withdrawalItemId], references: [id])
+  createdAt        DateTime                @default(now())
 
   @@index([productId, createdAt])
-  createdAt       DateTime            @default(now())
 }
 
 model StatusHistory {

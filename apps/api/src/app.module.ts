@@ -10,14 +10,35 @@ import { DashboardController } from "./dashboard.controller.js";
 import { AuthGuard } from "./auth.js";
 import { ReportsController } from "./reports.controller.js";
 import { ProductsController } from "./products.controller.js";
+import { PurchasesController } from "./purchases.controller.js";
+import { ProductRegistrationRequestsController } from "./product-registration-requests.controller.js";
+import { SuppliersController } from "./suppliers.controller.js";
+import { MaterialWithdrawalsController } from "./material-withdrawals.controller.js";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({ global: true, secret: process.env.JWT_ACCESS_SECRET }),
-    LoggerModule.forRoot({ pinoHttp: { redact: ["req.headers.cookie", "req.body.password"], genReqId: req => String(req.headers["x-correlation-id"] || crypto.randomUUID()) } })
+    LoggerModule.forRoot({
+      pinoHttp: {
+        redact: ["req.headers.cookie", "req.body.password"],
+        genReqId: (req) =>
+          String(req.headers["x-correlation-id"] || crypto.randomUUID()),
+      },
+    }),
   ],
-  controllers: [StockController, AuthController, RequestsController, DashboardController, ReportsController, ProductsController],
-  providers: [PrismaService, AuthGuard]
+  controllers: [
+    StockController,
+    AuthController,
+    RequestsController,
+    PurchasesController,
+    DashboardController,
+    ReportsController,
+    ProductsController,
+    ProductRegistrationRequestsController,
+    SuppliersController,
+    MaterialWithdrawalsController,
+  ],
+  providers: [PrismaService, AuthGuard],
 })
 export class AppModule {}

@@ -87,3 +87,13 @@ Uso interno. Consulte [LICENSE](LICENSE) e [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Controle de estoque
 
 O módulo de estoque possui entradas, saídas, saldo inicial, ajustes auditados, mínimos e alertas. Consulte [o guia do almoxarifado](docs/ESTOQUE.md).
+
+## Fluxo de compras e recebimentos
+
+O módulo **Compras** separa as três etapas operacionais:
+
+1. **Solicitação:** a demanda exibe apenas a quantidade ainda não convertida em pedido.
+2. **Pedido:** Compras seleciona os itens solicitados, informa número do pedido, fornecedor, quantidades, preços e previsão.
+3. **Recebimento:** o almoxarifado busca pelo número do pedido, informa a Nota Fiscal e confirma as quantidades efetivamente entregues.
+
+O recebimento pode ser parcial. Cada confirmação atualiza, na mesma transação, o saldo pendente do pedido, as quantidades e os status da solicitação, o estoque dos produtos catalogados, o histórico e a auditoria. A mesma Nota Fiscal não pode ser registrada duas vezes no mesmo pedido e quantidades acima dos saldos pendentes são rejeitadas.
