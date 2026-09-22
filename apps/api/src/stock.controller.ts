@@ -23,7 +23,7 @@ import { quantity } from "./stock.validation.js";
 type StockRequest = Request & {
   user: { sub: string; organizationId: string; role: string; name: string };
 };
-const writers = ["ADMIN", "COMPRAS", "ALMOXARIFADO"];
+const writers = ["ADMIN", "ALMOXARIFADO"];
 function allowed(req: StockRequest) {
   if (!writers.includes(req.user.role))
     throw new ForbiddenException(
@@ -229,12 +229,12 @@ export class StockController {
     },
   ) {
     allowed(req);
-    if (!["ENTRADA", "SAIDA", "INICIAL", "AJUSTE"].includes(body.type || ""))
-      throw new BadRequestException("Tipo de movimentação inválido.");
-    const type = body.type as "ENTRADA" | "SAIDA" | "INICIAL" | "AJUSTE";
+    if (body.type !== "AJUSTE")
+      throw new BadRequestException(
+        "O saldo manual só pode ser alterado por ajuste de contagem. Entradas devem vir do recebimento e saídas das retiradas de material.",
+      );
+    const type = "AJUSTE" as const;
     const amount = new Prisma.Decimal(quantity(body.quantity));
-    if (["ENTRADA", "SAIDA"].includes(type) && amount.lte(0))
-      throw new BadRequestException("A quantidade deve ser maior que zero.");
     const note = optionalText(body.note, 1000);
     const reference = optionalText(body.reference, 120);
     if (type === "AJUSTE" && (!note || note.length < 5))
@@ -258,9 +258,7 @@ export class StockController {
         where: { operationId: body.operationId },
       });
       if (existing) {
-        const originalAmount = ["AJUSTE", "INICIAL"].includes(existing.origin)
-          ? existing.newBalance
-          : existing.newBalance.minus(existing.previousBalance).abs();
+        const originalAmount = existing.newBalance;
         if (
           existing.productId !== id ||
           existing.userId !== req.user.sub ||
@@ -278,14 +276,6 @@ export class StockController {
         throw new ConflictException(
           "O saldo mudou. Feche o formulário e confira o saldo atualizado antes de tentar novamente.",
         );
-      if (
-        type === "INICIAL" &&
-        ((await tx.stockMovement.count({ where: { productId: id } })) > 0 ||
-          !product.stockBalance.eq(0))
-      )
-        throw new ConflictException(
-          "Este produto já tem histórico. Use ajuste para registrar uma contagem.",
-        );
       const reservation = await tx.materialWithdrawalItem.aggregate({
         where: {
           productId: id,
@@ -294,23 +284,14 @@ export class StockController {
         _sum: { quantity: true },
       });
       const reserved = reservation._sum.quantity || new Prisma.Decimal(0);
-      const balance =
-        type === "ENTRADA"
-          ? product.stockBalance.plus(amount)
-          : type === "SAIDA"
-            ? product.stockBalance.minus(amount)
-            : amount;
-      if (balance.lt(0))
-        throw new BadRequestException(
-          "Saldo insuficiente. A saída não pode deixar o estoque negativo.",
-        );
+      const balance = amount;
       if (balance.lt(reserved))
         throw new BadRequestException(
           `Existem ${reserved.toString()} unidades reservadas. Esta operação deixaria o saldo disponível negativo.`,
         );
       if (balance.gt("999999999999.999"))
         throw new BadRequestException("Saldo acima do limite permitido.");
-      if (type === "AJUSTE" && balance.eq(product.stockBalance))
+      if (balance.eq(product.stockBalance))
         throw new BadRequestException(
           "O saldo informado já corresponde ao saldo atual.",
         );

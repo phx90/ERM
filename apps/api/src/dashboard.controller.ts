@@ -23,7 +23,7 @@ export class DashboardController {
         where: { organizationId: org, deletedAt: null },
         orderBy: [{ requestDate: "desc" }, { createdAt: "desc" }],
         take: 6,
-        select: { id: true, number: true, requestDate: true, requesterOriginal: true, aggregateStatus: true, department: { select: { name: true } }, _count: { select: { items: true } } }
+        select: { id: true, number: true, requestDate: true, requesterOriginal: true, aggregateStatus: true, department: { select: { name: true } }, createdBy: { select: { name: true } }, _count: { select: { items: true } } }
       })
       ,this.db.product.findMany({ where: { organizationId: org, active: true }, select: { stockBalance: true, minimumStock: true } })
       ,this.db.purchaseRequestItem.aggregate({

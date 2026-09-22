@@ -66,7 +66,11 @@ export class RequestsController {
     const [data, total] = await this.db.$transaction([
       this.db.purchaseRequest.findMany({
         where,
-        include: { items: { include: { status: true } }, department: true },
+        include: {
+          items: { include: { status: true } },
+          department: true,
+          createdBy: { select: { name: true } },
+        },
         orderBy: { requestDate: sortDir === "asc" ? "asc" : "desc" },
         skip: (Number(page) - 1) * take,
         take,
@@ -240,6 +244,7 @@ export class RequestsController {
           organizationId: req.user.organizationId,
           number,
           requestDate: input.requestDate,
+          requesterOriginal: input.requesterOriginal,
           requesterId: input.requesterId,
           departmentId: input.departmentId,
           projectId: input.projectId,

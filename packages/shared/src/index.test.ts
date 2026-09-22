@@ -1,11 +1,37 @@
 import { describe, expect, it } from "vitest";
 import {
   leadTimeDays,
+  purchaseRequestSchema,
   purchaseOrderSchema,
   purchaseReceiptSchema,
   supplierSchema,
   materialWithdrawalSchema,
 } from "./index.js";
+
+describe("solicitação de compra", () => {
+  const validRequest = {
+    requestDate: "2026-09-22",
+    requesterOriginal: "Maria Silva",
+    items: [
+      {
+        description: "Material de teste",
+        quantity: 1,
+        unit: "UN",
+        criticality: "MEDIA" as const,
+      },
+    ],
+  };
+
+  it("exige o nome do solicitante", () => {
+    expect(purchaseRequestSchema.safeParse(validRequest).success).toBe(true);
+    expect(
+      purchaseRequestSchema.safeParse({
+        ...validRequest,
+        requesterOriginal: " ",
+      }).success,
+    ).toBe(false);
+  });
+});
 
 describe("leadTimeDays", () => {
   it("calcula dias corridos sem valor absoluto", () => {

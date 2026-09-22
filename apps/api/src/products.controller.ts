@@ -1,5 +1,5 @@
 import { quantity } from "./stock.validation.js";
-import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, ForbiddenException, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
 import type { Request } from "express";
 import { PrismaService } from "./prisma.service.js";
 import { AuthGuard } from "./auth.js";
@@ -72,7 +72,7 @@ export class ProductsController {
 
   @Patch(":id")
   async update(@Req() req: AuthedRequest, @Param("id") id: string, @Body() input: ProductInput) {
-    if (!["ADMIN", "COMPRAS", "ALMOXARIFADO"].includes(req.user.role)) throw new BadRequestException("Perfil sem permissão para editar produtos.");
+    if (req.user.role !== "COMPRAS") throw new ForbiddenException("Somente o setor de Compras pode editar produtos.");
     if (input.stockBalance !== undefined) throw new BadRequestException("Altere o saldo pelo módulo de estoque.");
     if (input.minimumStock != null) quantity(input.minimumStock);
     return this.db.$transaction(async tx => {
@@ -102,7 +102,7 @@ export class ProductsController {
 
   @Post()
   async create(@Req() req: AuthedRequest, @Body() input: ProductInput) {
-    if (!["ADMIN", "COMPRAS", "ALMOXARIFADO"].includes(req.user.role)) throw new BadRequestException("Perfil sem permissão para cadastrar produtos.");
+    if (req.user.role !== "COMPRAS") throw new ForbiddenException("Somente o setor de Compras pode cadastrar produtos.");
     if (input.stockBalance !== undefined && input.stockBalance !== 0) throw new BadRequestException("Registre o saldo inicial pelo módulo de estoque.");
     if (input.minimumStock != null) quantity(input.minimumStock);
     const code = String(input.code || "").trim();

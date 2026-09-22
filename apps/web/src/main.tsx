@@ -3,6 +3,7 @@ import { Purchases } from "./purchases";
 import { ProductRegistrationRequests } from "./product-registration-requests";
 import { Suppliers } from "./suppliers";
 import { MaterialWithdrawals } from "./material-withdrawals";
+import { Users } from "./users";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -36,15 +37,17 @@ import {
   Handshake,
   LockKeyhole,
   LogOut,
+  Moon,
   PackageCheck,
   PackageMinus,
   PackagePlus,
   Plus,
   Save,
   Search,
-  ShoppingCart,
+  Sun,
   TrendingUp,
   UserRound,
+  UsersRound,
   X,
 } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -89,6 +92,30 @@ const useAuth = () => {
   return context;
 };
 
+function ThemeToggle({ compact = false }: { compact?: boolean }) {
+  const [dark, setDark] = useState(() =>
+    document.documentElement.classList.contains("dark"),
+  );
+  const toggle = () => {
+    const next = !dark;
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("erm-theme", next ? "dark" : "light");
+    setDark(next);
+  };
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      className={`theme-toggle ${compact ? "h-9 px-2.5" : "h-10 px-3"}`}
+      title={dark ? "Usar modo claro" : "Usar modo noturno"}
+      aria-label={dark ? "Ativar modo claro" : "Ativar modo noturno"}
+    >
+      {dark ? <Sun size={18} /> : <Moon size={18} />}
+      {!compact && <span>{dark ? "Modo claro" : "Modo noturno"}</span>}
+    </button>
+  );
+}
+
 function Login() {
   const nav = useNavigate();
   const [error, setError] = useState("");
@@ -114,30 +141,30 @@ function Login() {
     }
   };
   return (
-    <main className="min-h-screen bg-[#07111f] lg:grid lg:grid-cols-[1.15fr_.85fr]">
+    <main className="relative min-h-screen bg-[#061326] lg:grid lg:grid-cols-[1.12fr_.88fr]">
+      <div className="absolute right-5 top-5 z-20">
+        <ThemeToggle />
+      </div>
       <section className="relative hidden overflow-hidden p-14 text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(37,99,235,.38),transparent_38%),radial-gradient(circle_at_85%_80%,rgba(14,165,233,.18),transparent_35%)]" />
-        <div className="relative flex items-center gap-3">
-          <div className="rounded-xl border border-white/15 bg-white/10 p-3">
-            <ShoppingCart size={25} />
-          </div>
-          <div>
-            <p className="font-bold tracking-wide">ERT / ERM</p>
-            <p className="text-xs text-blue-200">
-              Gestão corporativa de suprimentos
-            </p>
-          </div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(29,78,216,.4),transparent_38%),radial-gradient(circle_at_88%_85%,rgba(14,165,233,.2),transparent_35%)]" />
+        <div className="absolute -bottom-32 -left-20 h-80 w-[120%] rotate-[-6deg] rounded-[50%] border border-blue-400/15 bg-blue-500/5" />
+        <div className="brand-surface relative inline-flex w-fit items-center rounded-2xl bg-white px-5 py-3 shadow-xl shadow-black/20">
+          <img
+            src="/erm-logo.png"
+            alt="Estaleiro Rio Maguari"
+            className="h-14 w-auto object-contain"
+          />
         </div>
         <div className="relative max-w-2xl">
           <span className="mb-5 inline-flex rounded-full border border-blue-400/30 bg-blue-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[.2em] text-blue-200">
-            Operação integrada
+            ERM · Operação integrada
           </span>
           <h1 className="text-5xl font-semibold leading-[1.08] tracking-tight">
-            Compras, estoque e entregas em um só lugar.
+            Suprimentos que acompanham o ritmo do estaleiro.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
-            Acompanhe solicitações do pedido ao recebimento, com
-            rastreabilidade, indicadores e controle de acesso.
+            Solicitações, compras, recebimentos e estoque conectados em uma
+            operação segura e rastreável.
           </p>
           <div className="mt-10 grid grid-cols-2 gap-4 text-sm text-slate-300">
             {[
@@ -154,16 +181,20 @@ function Login() {
           </div>
         </div>
         <p className="relative text-xs text-slate-500">
-          Ambiente interno protegido • America/Sao_Paulo
+          Estaleiro Rio Maguari • Ambiente interno protegido
         </p>
       </section>
       <section className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-10">
         <form onSubmit={submit} className="w-full max-w-md">
           <div className="mb-9 lg:hidden">
-            <div className="mb-3 inline-flex rounded-xl bg-blue-700 p-3 text-white">
-              <ShoppingCart />
+            <div className="brand-surface mb-5 inline-flex rounded-xl bg-white px-4 py-2">
+              <img
+                src="/erm-logo.png"
+                alt="Estaleiro Rio Maguari"
+                className="h-14 w-auto"
+              />
             </div>
-            <h1 className="text-2xl font-bold">Compras ERT/ERM</h1>
+            <h1 className="text-2xl font-bold">Gestão de suprimentos ERM</h1>
           </div>
           <p className="text-sm font-semibold uppercase tracking-[.18em] text-blue-700">
             Acesso seguro
@@ -239,6 +270,99 @@ function Login() {
   );
 }
 
+function ChangePassword() {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const password = String(form.get("password") || "");
+    const confirmation = String(form.get("confirmation") || "");
+    if (password !== confirmation) {
+      setError("A confirmação não corresponde à nova senha.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      await api("/auth/change-password", {
+        method: "POST",
+        body: JSON.stringify({ password }),
+      });
+      await queryClient.invalidateQueries({ queryKey: ["me"] });
+    } catch (cause) {
+      const detail = (cause as { detail?: { message?: string | string[] } })
+        .detail?.message;
+      setError(
+        Array.isArray(detail)
+          ? detail.join(" ")
+          : detail || "Não foi possível alterar a senha.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <div className="fixed inset-0 z-[60] grid place-items-center bg-slate-950/80 p-4 backdrop-blur-sm">
+      <form
+        onSubmit={submit}
+        className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
+      >
+        <div className="bg-[#071b35] px-7 py-6 text-white">
+          <img
+            src="/erm-logo.png"
+            alt="ERM"
+            className="mb-5 h-12 rounded-lg bg-white px-3 py-2"
+          />
+          <p className="text-xs font-bold uppercase tracking-[.18em] text-blue-300">
+            Primeiro acesso
+          </p>
+          <h2 className="mt-2 text-2xl font-bold">Crie sua senha definitiva</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            Por segurança, substitua a senha temporária antes de acessar o
+            sistema.
+          </p>
+        </div>
+        <div className="space-y-4 p-7">
+          <label className="block text-sm font-semibold text-slate-700">
+            Nova senha
+            <input
+              name="password"
+              type="password"
+              minLength={12}
+              required
+              autoFocus
+              autoComplete="new-password"
+              className="input mt-1.5"
+              placeholder="Mínimo de 12 caracteres"
+            />
+          </label>
+          <label className="block text-sm font-semibold text-slate-700">
+            Confirmar nova senha
+            <input
+              name="confirmation"
+              type="password"
+              minLength={12}
+              required
+              autoComplete="new-password"
+              className="input mt-1.5"
+            />
+          </label>
+          {error && (
+            <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+              {error}
+            </p>
+          )}
+          <button className="button h-11 w-full" disabled={loading}>
+            <LockKeyhole size={18} />{" "}
+            {loading ? "Salvando…" : "Definir nova senha"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 const links = [
   ["/", BarChart3, "Dashboard"],
   ["/nova", PackagePlus, "Nova solicitação"],
@@ -250,22 +374,24 @@ const links = [
   ["/estoque", Boxes, "Estoque"],
   ["/produtos", Boxes, "Itens / Produtos"],
   ["/relatorios", FileSpreadsheet, "Relatórios"],
+  ["/usuarios", UsersRound, "Usuários"],
 ] as const;
 function Shell({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[250px_minmax(0,1fr)]">
       <aside className="bg-slate-950 p-5 text-slate-200">
-        <div className="mb-8 flex items-center gap-3 border-b border-slate-800 pb-6 text-lg font-bold text-white">
-          <div className="rounded-lg bg-blue-600 p-2">
-            <Boxes size={19} />
+        <div className="mb-7 border-b border-slate-800 pb-6">
+          <div className="brand-surface rounded-xl bg-white px-4 py-3 shadow-lg shadow-black/20">
+            <img
+              src="/erm-logo.png"
+              alt="Estaleiro Rio Maguari"
+              className="mx-auto h-12 w-auto object-contain"
+            />
           </div>
-          <div>
-            <span>Almoxarifado</span>
-            <p className="text-[10px] font-medium uppercase tracking-[.18em] text-slate-500">
-              ERT / ERM
-            </p>
-          </div>
+          <p className="mt-3 text-center text-[10px] font-semibold uppercase tracking-[.2em] text-slate-500">
+            Gestão de suprimentos
+          </p>
         </div>
         <nav className="space-y-1">
           {links.map(([to, Icon, label]) =>
@@ -273,6 +399,7 @@ function Shell({ children }: { children: React.ReactNode }) {
               !["ADMIN", "ALMOXARIFADO"].includes(user.role)) ||
             (to === "/fornecedores" &&
               !["ADMIN", "COMPRAS"].includes(user.role)) ||
+            (to === "/usuarios" && user.role !== "ADMIN") ||
             (to === "/retiradas" && user.role === "CONSULTA") ? null : (
               <NavLink
                 key={to}
@@ -295,13 +422,14 @@ function Shell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3 text-sm text-slate-500">
             <span className="flex items-center gap-2">
               <Building2 size={17} />
-              Gestão de compras
+              Gestão de suprimentos ERM
             </span>
             <span className="rounded-full bg-blue-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-blue-700">
               v0.4 edição
             </span>
           </div>
           <div className="flex items-center gap-4">
+            <ThemeToggle compact />
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold leading-5 text-slate-800">
                 {user.name}
@@ -352,6 +480,7 @@ function Dashboard() {
       number: string;
       requestDate: string;
       requesterOriginal?: string;
+      createdBy: { name: string };
       aggregateStatus: string;
       department?: { name: string };
       items: number;
@@ -642,8 +771,10 @@ function Dashboard() {
                     </span>
                   </div>
                   <p className="mt-0.5 truncate text-xs text-slate-500">
-                    {request.requesterOriginal || "Sem solicitante"} •{" "}
-                    {request.department?.name || "Sem departamento"}
+                    Solicitante: {request.requesterOriginal || "Não informado"}
+                  </p>
+                  <p className="mt-0.5 truncate text-xs text-slate-400">
+                    Registrado por: {request.createdBy.name}
                   </p>
                 </div>
                 <div className="hidden text-right sm:block">
@@ -742,6 +873,7 @@ type RequestDetail = {
   number: string;
   requestDate: string;
   requesterOriginal?: string;
+  createdBy: { name: string };
   aggregateStatus: string;
   notes?: string;
   version: number;
@@ -768,6 +900,7 @@ function Requests() {
           requestDate: string;
           aggregateStatus: string;
           requesterOriginal?: string;
+          createdBy: { name: string };
           department?: { name: string };
           items: unknown[];
         }>;
@@ -914,12 +1047,13 @@ function Requests() {
           </select>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[980px] text-sm">
+          <table className="w-full min-w-[1120px] text-sm">
             <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
               <tr>
                 <th className="px-4 py-3">SC</th>
                 <th className="px-4 py-3">Data</th>
                 <th className="px-4 py-3">Solicitante</th>
+                <th className="px-4 py-3">Registrado por</th>
                 <th className="px-4 py-3">Departamento</th>
                 <th className="px-4 py-3 text-center">Itens</th>
                 <th className="px-4 py-3">Status</th>
@@ -929,7 +1063,7 @@ function Requests() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td className="p-5" colSpan={7}>
+                  <td className="p-5" colSpan={8}>
                     Carregando…
                   </td>
                 </tr>
@@ -951,6 +1085,7 @@ function Requests() {
                     <td className="px-4 py-3.5">
                       {r.requesterOriginal || "—"}
                     </td>
+                    <td className="px-4 py-3.5">{r.createdBy.name}</td>
                     <td className="px-4 py-3.5">{r.department?.name || "—"}</td>
                     <td className="px-4 py-3.5 text-center">
                       {r.items.length}
@@ -1047,7 +1182,7 @@ function Requests() {
                     status” do item, escolha o novo status e confirme em “Salvar
                     novo status”.
                   </div>
-                  <div className="grid gap-4 rounded-xl bg-slate-50 p-5 sm:grid-cols-3">
+                  <div className="grid gap-4 rounded-xl bg-slate-50 p-5 sm:grid-cols-2 lg:grid-cols-4">
                     <div>
                       <p className="text-xs text-slate-500">Data</p>
                       <p className="font-semibold">
@@ -1060,6 +1195,12 @@ function Requests() {
                       <p className="text-xs text-slate-500">Solicitante</p>
                       <p className="font-semibold">
                         {detail.data.requesterOriginal || "—"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500">Registrado por</p>
+                      <p className="font-semibold">
+                        {detail.data.createdBy.name}
                       </p>
                     </div>
                     <div>
@@ -1243,7 +1384,8 @@ type ProductForm = {
   ca?: string;
   note?: string;
 };
-function Products() {
+function Products({ role }: { role: string }) {
+  const canManage = role === "COMPRAS";
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
@@ -1255,8 +1397,8 @@ function Products() {
   const [sortDir, setSortDir] = useState("asc");
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    if (searchParams.get("novo") === "1") setOpen(true);
-  }, [searchParams]);
+    if (searchParams.get("novo") === "1" && canManage) setOpen(true);
+  }, [canManage, searchParams]);
   const closeForm = () => {
     setOpen(false);
     setEditing(null);
@@ -1340,9 +1482,11 @@ function Products() {
             Cadastre cada item antes de incluí-lo em uma solicitação de compra.
           </p>
         </div>
-        <button className="button" onClick={() => setOpen(true)}>
-          <Plus size={18} /> Cadastrar novo item
-        </button>
+        {canManage && (
+          <button className="button" onClick={() => setOpen(true)}>
+            <Plus size={18} /> Cadastrar novo item
+          </button>
+        )}
       </div>
       <div className="mb-5 grid gap-4 md:grid-cols-3">
         {[
@@ -1487,7 +1631,7 @@ function Products() {
                         }}
                         className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 font-semibold text-blue-700 hover:bg-blue-100"
                       >
-                        Ver / Editar
+                        {canManage ? "Ver / Editar" : "Ver item"}
                       </button>
                     </td>
                   </tr>
@@ -1542,14 +1686,20 @@ function Products() {
             <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white px-7 py-5">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
-                  {editing ? "Detalhes e edição" : "Novo cadastro"}
+                  {editing
+                    ? canManage
+                      ? "Detalhes e edição"
+                      : "Consulta do item"
+                    : "Novo cadastro"}
                 </p>
                 <h2 className="text-xl font-bold">
                   {editing ? editing.genericDescription : "Cadastrar novo item"}
                 </h2>
                 <p className="text-sm text-slate-500">
                   {editing
-                    ? "Altere os campos e salve para atualizar o produto."
+                    ? canManage
+                      ? "Altere os campos e salve para atualizar o produto."
+                      : "Visualização somente leitura. Alterações são exclusivas do setor de Compras."
                     : "Após salvar, ele estará disponível nas solicitações."}
                 </p>
               </div>
@@ -1561,7 +1711,10 @@ function Products() {
                 <X />
               </button>
             </div>
-            <div className="grid gap-5 p-7 md:grid-cols-2">
+            <fieldset
+              disabled={!canManage}
+              className="grid gap-5 p-7 md:grid-cols-2 disabled:opacity-90"
+            >
               <label className="text-sm font-semibold">
                 Código do produto
                 <input
@@ -1660,23 +1813,25 @@ function Products() {
                     ?.message || "Não foi possível cadastrar o produto."}
                 </p>
               )}
-            </div>
+            </fieldset>
             <div className="sticky bottom-0 flex justify-end gap-3 border-t bg-white px-7 py-4">
               <button
                 type="button"
                 className="rounded-lg border px-4 py-2"
                 onClick={closeForm}
               >
-                Cancelar
+                {canManage ? "Cancelar" : "Fechar"}
               </button>
-              <button className="button" disabled={create.isPending}>
-                <Save size={17} />
-                {create.isPending
-                  ? "Salvando…"
-                  : editing
-                    ? "Salvar alterações"
-                    : "Salvar item"}
-              </button>
+              {canManage && (
+                <button className="button" disabled={create.isPending}>
+                  <Save size={17} />
+                  {create.isPending
+                    ? "Salvando…"
+                    : editing
+                      ? "Salvar alterações"
+                      : "Salvar item"}
+                </button>
+              )}
             </div>
           </form>
         </div>
@@ -1687,6 +1842,7 @@ function Products() {
 
 function NewRequest() {
   const nav = useNavigate();
+  const { user } = useAuth();
   const form = useForm<
     z.input<typeof purchaseRequestSchema>,
     unknown,
@@ -1695,6 +1851,7 @@ function NewRequest() {
     resolver: zodResolver(purchaseRequestSchema),
     defaultValues: {
       requestDate: new Date(),
+      requesterOriginal: "",
       items: [
         { description: "", quantity: 1, unit: "UN", criticality: "MEDIA" },
       ],
@@ -1738,12 +1895,14 @@ function NewRequest() {
               Informe os dados gerais e adicione todos os produtos necessários.
             </p>
           </div>
-          <Link
-            to="/produtos?novo=1"
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 text-sm font-semibold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
-          >
-            <Plus size={18} /> Cadastrar produto
-          </Link>
+          {user.role === "COMPRAS" && (
+            <Link
+              to="/produtos?novo=1"
+              className="inline-flex h-11 items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 text-sm font-semibold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
+            >
+              <Plus size={18} /> Cadastrar produto
+            </Link>
+          )}
         </div>
       </div>
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:px-7 xl:grid-cols-[minmax(0,1fr)_310px]">
@@ -1762,7 +1921,7 @@ function NewRequest() {
                 </p>
               </div>
             </div>
-            <div className="grid gap-5 p-5 sm:grid-cols-[220px_1fr] sm:p-6">
+            <div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-6">
               <label className="text-sm font-semibold text-slate-700">
                 Data da solicitação <span className="text-red-500">*</span>
                 <input
@@ -1772,6 +1931,20 @@ function NewRequest() {
                 />
               </label>
               <label className="text-sm font-semibold text-slate-700">
+                Nome do solicitante <span className="text-red-500">*</span>
+                <input
+                  className="input mt-2 h-12"
+                  maxLength={120}
+                  placeholder="Informe o nome completo"
+                  {...form.register("requesterOriginal")}
+                />
+                {form.formState.errors.requesterOriginal && (
+                  <span className="mt-1 block text-xs text-red-600">
+                    {form.formState.errors.requesterOriginal.message}
+                  </span>
+                )}
+              </label>
+              <label className="text-sm font-semibold text-slate-700 sm:col-span-2">
                 Observações gerais{" "}
                 <span className="font-normal text-slate-400">(opcional)</span>
                 <textarea
@@ -1780,6 +1953,19 @@ function NewRequest() {
                   {...form.register("notes")}
                 />
               </label>
+              <div className="flex items-center gap-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900 sm:col-span-2">
+                <UserRound size={20} className="shrink-0 text-blue-700" />
+                <div>
+                  <p className="text-xs font-medium text-blue-600">
+                    Usuário responsável pelo registro
+                  </p>
+                  <p className="font-bold">{user.name}</p>
+                  <p className="text-xs text-blue-700/80">
+                    Esta informação é registrada automaticamente para
+                    rastreabilidade.
+                  </p>
+                </div>
+              </div>
             </div>
           </section>
           <section>
@@ -2027,8 +2213,7 @@ function Reports() {
       const blob = await response.blob();
       const disposition = response.headers.get("content-disposition") || "";
       const match = disposition.match(/filename="?([^"]+)"?/i);
-      const fileName =
-        match?.[1] || `SOLICITACAO_DE_COMPRA_ERT_ERM_${year}.xlsx`;
+      const fileName = match?.[1] || `SOLICITACAO_DE_COMPRA_ERM_${year}.xlsx`;
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
@@ -2049,8 +2234,7 @@ function Reports() {
         </p>
         <h1 className="mt-1 text-2xl font-bold">Relatórios Excel</h1>
         <p className="text-slate-500">
-          Gere uma cópia fiel do modelo ERT/ERM atualizada com os dados do
-          sistema.
+          Gere uma cópia fiel do modelo ERM atualizada com os dados do sistema.
         </p>
       </div>
       <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
@@ -2060,9 +2244,7 @@ function Reports() {
               <FileSpreadsheet size={28} />
             </div>
             <div>
-              <h2 className="text-lg font-bold">
-                Solicitação de Compra ERT / ERM
-              </h2>
+              <h2 className="text-lg font-bold">Solicitação de Compra ERM</h2>
               <p className="mt-1 text-sm leading-6 text-slate-500">
                 Mantém as abas, formatação, filtros, fórmulas e configurações do
                 arquivo original. Atualiza o catálogo de produtos, saldos de
@@ -2171,11 +2353,15 @@ function ProtectedApp() {
   };
   return (
     <AuthContext.Provider value={{ user: data.user, logout }}>
+      {data.user.mustChangePassword && <ChangePassword />}
       <Shell>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/estoque" element={<Stock role={data.user.role} />} />
-          <Route path="/produtos" element={<Products />} />
+          <Route
+            path="/produtos"
+            element={<Products role={data.user.role} />}
+          />
           <Route path="/solicitacoes" element={<Requests />} />
           <Route
             path="/nova"
@@ -2216,6 +2402,16 @@ function ProtectedApp() {
             }
           />
           <Route path="/relatorios" element={<Reports />} />
+          <Route
+            path="/usuarios"
+            element={
+              data.user.role === "ADMIN" ? (
+                <Users />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
           <Route path="/auditoria" element={<Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

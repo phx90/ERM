@@ -23,6 +23,11 @@ export const requestItemSchema = z.object({
 });
 export const purchaseRequestSchema = z.object({
   requestDate: z.coerce.date(),
+  requesterOriginal: z
+    .string()
+    .trim()
+    .min(2, "Informe o nome do solicitante.")
+    .max(120, "O nome do solicitante deve ter no máximo 120 caracteres."),
   requesterId: z.string().uuid().optional(),
   departmentId: z.string().uuid().optional(),
   projectId: z.string().uuid().optional(),

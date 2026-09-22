@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowDownToLine,
-  ArrowUpFromLine,
   AlertTriangle,
   Boxes,
   History,
@@ -42,7 +41,7 @@ type Position = {
   pageSize: number;
   summary: { all: number; zero: number; below: number };
 };
-type Action = "ENTRADA" | "SAIDA" | "INICIAL" | "AJUSTE" | "MINIMO";
+type Action = "AJUSTE" | "MINIMO";
 const labels: Record<string, string> = {
   ENTRADA: "Entrada",
   SAIDA: "Saída",
@@ -127,11 +126,7 @@ function MovementForm({
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [amount, setAmount] = useState(
-    action === "MINIMO"
-      ? (product.minimumStock ?? "")
-      : action === "AJUSTE"
-        ? product.stockBalance
-        : "",
+    action === "MINIMO" ? (product.minimumStock ?? "") : product.stockBalance,
   );
   const [note, setNote] = useState("");
   const [reference, setReference] = useState("");
@@ -172,21 +167,10 @@ function MovementForm({
   useEffect(() => {
     dialog.current?.showModal();
   }, []);
-  const current = Number(product.stockBalance);
   const reserved = Number(product.reservedBalance);
   const available = Number(product.availableBalance);
-  const preview =
-    action === "ENTRADA"
-      ? current + Number(amount)
-      : action === "SAIDA"
-        ? current - Number(amount)
-        : Number(amount);
-  const violatesReservation =
-    action === "SAIDA"
-      ? Number(amount) > available
-      : ["AJUSTE", "INICIAL"].includes(action)
-        ? preview < reserved
-        : false;
+  const preview = Number(amount);
+  const violatesReservation = action === "AJUSTE" && preview < reserved;
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (!mutation.isPending) mutation.mutate();
@@ -251,18 +235,12 @@ function MovementForm({
           <label className="block text-sm font-semibold">
             {action === "MINIMO"
               ? "Quantidade mínima"
-              : action === "AJUSTE" || action === "INICIAL"
-                ? "Quantidade contada fisicamente"
-                : "Quantidade"}
+              : "Quantidade contada fisicamente"}
             <input
               autoFocus
               type="number"
-              min={action === "ENTRADA" || action === "SAIDA" ? "0.001" : "0"}
-              max={
-                action === "SAIDA"
-                  ? product.availableBalance
-                  : "999999999999.999"
-              }
+              min="0"
+              max="999999999999.999"
               step="0.001"
               required={action !== "MINIMO"}
               className="input mt-2 h-11"
@@ -300,32 +278,28 @@ function MovementForm({
                 <input
                   className="input mt-2"
                   maxLength={120}
-                  placeholder="Número do pedido, nota fiscal ou documento"
+                  placeholder="Documento ou referência da contagem"
                   value={reference}
                   onChange={(event) => setReference(event.target.value)}
                   disabled={mutation.isPending}
                 />
               </label>
               <label className="block text-sm font-semibold">
-                {action === "AJUSTE"
-                  ? "Motivo do ajuste (obrigatório)"
-                  : "Observação (opcional)"}
+                Motivo do ajuste (obrigatório)
                 <textarea
                   className="input mt-2 min-h-24"
-                  required={action === "AJUSTE"}
-                  minLength={action === "AJUSTE" ? 5 : undefined}
+                  required
+                  minLength={5}
                   maxLength={1000}
                   value={note}
                   onChange={(event) => setNote(event.target.value)}
                   disabled={mutation.isPending}
                 />
               </label>
-              {action === "AJUSTE" && (
-                <p className="text-xs text-slate-500">
-                  Informe o saldo correto contado. A diferença será registrada
-                  no histórico, sem apagar movimentações anteriores.
-                </p>
-              )}
+              <p className="text-xs text-slate-500">
+                Informe o saldo correto contado. A diferença será registrada no
+                histórico, sem apagar movimentações anteriores.
+              </p>
             </>
           )}
           {mutation.isError && (
@@ -357,7 +331,7 @@ function MovementForm({
               ? "Registrando…"
               : action === "MINIMO"
                 ? "Salvar mínimo"
-                : "Confirmar movimentação"}
+                : "Confirmar ajuste"}
           </button>
         </div>
       </form>
@@ -378,7 +352,7 @@ export function Stock({ role }: { role: string }) {
   const [to, setTo] = useState("");
   const [origin, setOrigin] = useState("");
   const [success, setSuccess] = useState("");
-  const writable = ["ADMIN", "COMPRAS", "ALMOXARIFADO"].includes(role);
+  const writable = ["ADMIN", "ALMOXARIFADO"].includes(role);
   const stock = useQuery({
     queryKey: ["stock", q, status, page],
     queryFn: () =>
@@ -430,8 +404,8 @@ export function Stock({ role }: { role: string }) {
             Controle de estoque
           </h1>
           <p className="mt-2 text-sm text-slate-500">
-            Entradas, saídas e reposição. Um único catálogo integrado às
-            compras.
+            Saldos integrados aos recebimentos e retiradas, com ajuste manual
+            restrito à conferência física.
           </p>
         </div>
         <Link
@@ -468,7 +442,7 @@ export function Stock({ role }: { role: string }) {
           <button
             key={card.label}
             onClick={() => filter(card.filter)}
-            className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-blue-300"
+            className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-50/60"
           >
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-500">{card.label}</span>
@@ -653,25 +627,16 @@ export function Stock({ role }: { role: string }) {
                         <td className="p-4">
                           <div className="flex flex-wrap gap-2">
                             {writable && (
-                              <>
-                                <button
-                                  onClick={() => open(product, "ENTRADA")}
-                                  className="flex items-center gap-1 rounded-lg border border-green-200 px-2.5 py-1.5 font-semibold text-green-700"
-                                >
-                                  <ArrowDownToLine size={14} /> Entrada
-                                </button>
-                                <button
-                                  disabled={zero}
-                                  onClick={() => open(product, "SAIDA")}
-                                  className="flex items-center gap-1 rounded-lg border border-blue-200 px-2.5 py-1.5 font-semibold text-blue-700 disabled:opacity-35"
-                                >
-                                  <ArrowUpFromLine size={14} /> Saída
-                                </button>
-                              </>
+                              <button
+                                onClick={() => open(product, "AJUSTE")}
+                                className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1.5 font-semibold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
+                              >
+                                <Settings2 size={14} /> Ajustar contagem
+                              </button>
                             )}
                             <button
                               onClick={() => showHistory(product)}
-                              className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-slate-600"
+                              className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-800"
                             >
                               Histórico
                             </button>
@@ -679,25 +644,8 @@ export function Stock({ role }: { role: string }) {
                           {writable && (
                             <div className="mt-3 flex flex-wrap gap-3 text-xs">
                               <button
-                                onClick={() =>
-                                  open(
-                                    product,
-                                    product._count.movements === 0 &&
-                                      Number(product.stockBalance) === 0
-                                      ? "INICIAL"
-                                      : "AJUSTE",
-                                  )
-                                }
-                                className="text-slate-500 underline underline-offset-2"
-                              >
-                                {product._count.movements === 0 &&
-                                Number(product.stockBalance) === 0
-                                  ? "Saldo inicial"
-                                  : "Ajustar contagem"}
-                              </button>
-                              <button
                                 onClick={() => open(product, "MINIMO")}
-                                className="inline-flex items-center gap-1 text-slate-500"
+                                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
                               >
                                 <Settings2 size={12} /> Definir mínimo
                               </button>
@@ -879,8 +827,9 @@ export function Stock({ role }: { role: string }) {
         </section>
       )}
       <p className="text-xs text-slate-400">
-        Saldos atualizados a cada 30 segundos. Compras em andamento não alteram
-        o estoque; registre a entrada ao receber o material.
+        Entradas são registradas pelo recebimento das ordens e saídas pela baixa
+        das retiradas. O ajuste de contagem existe apenas para corrigir o saldo
+        após uma conferência física.
       </p>
       {selected && action && (
         <MovementForm
@@ -895,7 +844,7 @@ export function Stock({ role }: { role: string }) {
             setSuccess(
               action === "MINIMO"
                 ? "Estoque mínimo atualizado."
-                : "Movimentação registrada. Saldo e histórico atualizados.",
+                : "Ajuste de contagem registrado. Saldo e histórico atualizados.",
             );
             setSelected(null);
             setAction(null);

@@ -46,6 +46,14 @@ function normalized(value: string) {
 export class PurchasesController {
   constructor(private db: PrismaService) {}
 
+  private async usersById(organizationId: string, ids: string[]) {
+    const users = await this.db.user.findMany({
+      where: { organizationId, id: { in: [...new Set(ids)] } },
+      select: { id: true, name: true },
+    });
+    return new Map(users.map((user) => [user.id, user]));
+  }
+
   private async statusIds(
     tx: Prisma.TransactionClient,
     organizationId: string,
@@ -103,7 +111,15 @@ export class PurchasesController {
           : {}),
       },
       include: {
-        request: { select: { id: true, number: true, requestDate: true } },
+        request: {
+          select: {
+            id: true,
+            number: true,
+            requestDate: true,
+            requesterOriginal: true,
+            createdBy: { select: { id: true, name: true } },
+          },
+        },
         product: { select: { id: true, code: true } },
         status: true,
       },
@@ -155,7 +171,15 @@ export class PurchasesController {
             allocations: {
               include: {
                 requestItem: {
-                  include: { request: { select: { number: true } } },
+                  include: {
+                    request: {
+                      select: {
+                        number: true,
+                        requesterOriginal: true,
+                        createdBy: { select: { id: true, name: true } },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -166,8 +190,26 @@ export class PurchasesController {
       orderBy: { createdAt: "desc" },
       take: 200,
     });
+    const users = await this.usersById(
+      req.user.organizationId,
+      orders.flatMap((order) => [
+        order.buyerId,
+        ...order.deliveries.map((delivery) => delivery.receivedById),
+      ]),
+    );
     return orders.map((order) => ({
       ...order,
+      createdBy: users.get(order.buyerId) || {
+        id: order.buyerId,
+        name: "Usuário não encontrado",
+      },
+      deliveries: order.deliveries.map((delivery) => ({
+        ...delivery,
+        receivedBy: users.get(delivery.receivedById) || {
+          id: delivery.receivedById,
+          name: "Usuário não encontrado",
+        },
+      })),
       items: order.items.map((item) => ({
         ...item,
         receivedQuantity: item.deliveryItems.reduce(
@@ -202,7 +244,15 @@ export class PurchasesController {
             allocations: {
               include: {
                 requestItem: {
-                  include: { request: { select: { number: true } } },
+                  include: {
+                    request: {
+                      select: {
+                        number: true,
+                        requesterOriginal: true,
+                        createdBy: { select: { id: true, name: true } },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -211,8 +261,23 @@ export class PurchasesController {
       },
     });
     if (!order) throw new NotFoundException("Pedido não encontrado.");
+    const users = await this.usersById(req.user.organizationId, [
+      order.buyerId,
+      ...order.deliveries.map((delivery) => delivery.receivedById),
+    ]);
     return {
       ...order,
+      createdBy: users.get(order.buyerId) || {
+        id: order.buyerId,
+        name: "Usuário não encontrado",
+      },
+      deliveries: order.deliveries.map((delivery) => ({
+        ...delivery,
+        receivedBy: users.get(delivery.receivedById) || {
+          id: delivery.receivedById,
+          name: "Usuário não encontrado",
+        },
+      })),
       items: order.items.map((item) => {
         const receivedQuantity = item.deliveryItems.reduce(
           (sum, delivery) => sum.plus(delivery.quantity),

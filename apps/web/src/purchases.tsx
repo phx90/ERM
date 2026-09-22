@@ -9,8 +9,15 @@ import {
   Plus,
   Search,
   ShoppingCart,
+  UserRound,
   X,
 } from "lucide-react";
+
+type RequestTrace = {
+  number: string;
+  requesterOriginal?: string;
+  createdBy: { id: string; name: string };
+};
 
 type DemandItem = {
   id: string;
@@ -21,7 +28,7 @@ type DemandItem = {
   purchasedQuantity: string;
   openQuantity: string;
   product?: { id: string; code: string };
-  request: { id: string; number: string; requestDate: string };
+  request: RequestTrace & { id: string; requestDate: string };
   status: { label: string };
 };
 type OrderItem = {
@@ -32,7 +39,7 @@ type OrderItem = {
   receivedQuantity: string;
   openQuantity: string;
   product?: { code: string };
-  allocations?: Array<{ requestItem: { request: { number: string } } }>;
+  allocations?: Array<{ requestItem: { request: RequestTrace } }>;
 };
 type Order = {
   id: string;
@@ -43,6 +50,7 @@ type Order = {
   carrier?: string;
   totalValue?: string;
   note?: string;
+  createdBy: { id: string; name: string };
   supplier: { legalName: string };
   items: OrderItem[];
   deliveries: Array<{
@@ -50,6 +58,7 @@ type Order = {
     invoiceNumber: string;
     deliveredAt: string;
     partial: boolean;
+    receivedBy: { id: string; name: string };
   }>;
 };
 type Tab = "demand" | "orders" | "receipt";
@@ -64,6 +73,16 @@ const number = (value: string | number) =>
   Number(value).toLocaleString("pt-BR", { maximumFractionDigits: 3 });
 const today = () =>
   new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+
+function linkedRequests(order: Order) {
+  const requests = new Map<string, RequestTrace>();
+  for (const item of order.items)
+    for (const allocation of item.allocations || []) {
+      const request = allocation.requestItem.request;
+      requests.set(request.number, request);
+    }
+  return [...requests.values()];
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`/api/purchases${path}`, {
@@ -144,13 +163,22 @@ export function Purchases({
   const requestGroups = useMemo(() => {
     const groups = new Map<
       string,
-      { id: string; number: string; requestDate: string; items: DemandItem[] }
+      {
+        id: string;
+        number: string;
+        requestDate: string;
+        requesterOriginal?: string;
+        createdBy: { id: string; name: string };
+        items: DemandItem[];
+      }
     >();
     for (const item of demand.data || []) {
       const group = groups.get(item.request.id) || {
         id: item.request.id,
         number: item.request.number,
         requestDate: item.request.requestDate,
+        requesterOriginal: item.request.requesterOriginal,
+        createdBy: item.request.createdBy,
         items: [],
       };
       group.items.push(item);
@@ -164,6 +192,8 @@ export function Purchases({
     return requestGroups.filter(
       (group) =>
         group.number.toLocaleLowerCase("pt-BR").includes(term) ||
+        group.requesterOriginal?.toLocaleLowerCase("pt-BR").includes(term) ||
+        group.createdBy.name.toLocaleLowerCase("pt-BR").includes(term) ||
         group.items.some((item) =>
           `${item.description} ${item.product?.code || item.manualCode || ""}`
             .toLocaleLowerCase("pt-BR")
@@ -174,6 +204,9 @@ export function Purchases({
   const selectedRequestCount = requestGroups.filter((group) =>
     group.items.every((item) => selected[item.id]),
   ).length;
+  const selectedRequestGroups = requestGroups.filter((group) =>
+    group.items.every((item) => selected[item.id]),
+  );
   const createOrder = useMutation({
     mutationFn: () =>
       request<Order>("/orders", {
@@ -512,6 +545,16 @@ export function Purchases({
                                 "pt-BR",
                               )}
                             </p>
+                            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                              <span className="text-slate-600">
+                                <strong>Solicitante:</strong>{" "}
+                                {group.requesterOriginal || "Não informado"}
+                              </span>
+                              <span className="text-slate-500">
+                                <strong>Registrado por:</strong>{" "}
+                                {group.createdBy.name}
+                              </span>
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -696,6 +739,33 @@ export function Purchases({
                       />
                     </label>
                   </div>
+                  <section className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
+                    <div className="mb-3 flex items-center gap-2 text-blue-900">
+                      <UserRound size={18} />
+                      <h3 className="text-sm font-bold">
+                        Rastreabilidade das solicitações
+                      </h3>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                      {selectedRequestGroups.map((group) => (
+                        <div
+                          key={group.id}
+                          className="rounded-xl border border-blue-100 bg-white p-3 text-sm"
+                        >
+                          <p className="font-bold text-blue-800">
+                            Solicitação {group.number}
+                          </p>
+                          <p className="mt-1 text-slate-700">
+                            <strong>Solicitante:</strong>{" "}
+                            {group.requesterOriginal || "Não informado"}
+                          </p>
+                          <p className="mt-1 text-xs text-slate-500">
+                            Registrada por: {group.createdBy.name}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
                   <div className="mt-7">
                     <div className="mb-3 flex items-center justify-between">
                       <div>
@@ -875,6 +945,10 @@ export function Purchases({
                           : "—"}{" "}
                         · Transportadora: {item.carrier || "—"}
                       </p>
+                      <p className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800">
+                        <UserRound size={14} /> Ordem criada por:{" "}
+                        {item.createdBy.name}
+                      </p>
                     </div>
                     {canReceive &&
                       item.status !== "RECEBIDA" &&
@@ -890,6 +964,22 @@ export function Purchases({
                           Receber
                         </button>
                       )}
+                  </div>
+                  <div className="mt-4 grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 md:grid-cols-2 xl:grid-cols-3">
+                    {linkedRequests(item).map((requestTrace) => (
+                      <div key={requestTrace.number} className="text-xs">
+                        <p className="font-bold text-blue-700">
+                          Solicitação {requestTrace.number}
+                        </p>
+                        <p className="mt-1 text-slate-600">
+                          Solicitante:{" "}
+                          {requestTrace.requesterOriginal || "Não informado"}
+                        </p>
+                        <p className="text-slate-500">
+                          Registrada por: {requestTrace.createdBy.name}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                   <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                     {item.items.map((line) => (
@@ -919,12 +1009,14 @@ export function Purchases({
                     ))}
                   </div>
                   {item.deliveries.length > 0 && (
-                    <p className="mt-3 text-xs text-slate-500">
-                      NF(s):{" "}
-                      {item.deliveries
-                        .map((delivery) => delivery.invoiceNumber)
-                        .join(", ")}
-                    </p>
+                    <div className="mt-3 space-y-1 text-xs text-slate-500">
+                      {item.deliveries.map((delivery) => (
+                        <p key={delivery.id}>
+                          NF {delivery.invoiceNumber} · recebida por{" "}
+                          <strong>{delivery.receivedBy.name}</strong>
+                        </p>
+                      ))}
+                    </div>
                   )}
                 </article>
               ))}
@@ -986,6 +1078,36 @@ export function Purchases({
                     Fornecedor: {order.data.supplier.legalName} ·
                     Transportadora: {order.data.carrier || "—"}
                   </p>
+                  <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50/70 p-4">
+                    <p className="flex items-center gap-2 text-sm font-bold text-blue-900">
+                      <UserRound size={17} /> Rastreabilidade da ordem
+                    </p>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="rounded-lg bg-white p-3 text-xs">
+                        <p className="text-slate-500">Ordem criada por</p>
+                        <p className="mt-1 font-bold text-slate-800">
+                          {order.data.createdBy.name}
+                        </p>
+                      </div>
+                      {linkedRequests(order.data).map((requestTrace) => (
+                        <div
+                          key={requestTrace.number}
+                          className="rounded-lg bg-white p-3 text-xs"
+                        >
+                          <p className="font-bold text-blue-700">
+                            Solicitação {requestTrace.number}
+                          </p>
+                          <p className="mt-1 text-slate-700">
+                            Solicitante:{" "}
+                            {requestTrace.requesterOriginal || "Não informado"}
+                          </p>
+                          <p className="mt-1 text-slate-500">
+                            Registrada por: {requestTrace.createdBy.name}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <div className="divide-y">
                   {order.data.items.map((item) => (

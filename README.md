@@ -1,4 +1,4 @@
-# Compras ERT/ERM
+# Gestão de Suprimentos ERM
 
 Sistema interno para substituir a planilha de solicitações de compra por uma fonte transacional, multiusuário e auditável.
 

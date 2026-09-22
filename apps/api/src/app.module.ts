@@ -14,6 +14,7 @@ import { PurchasesController } from "./purchases.controller.js";
 import { ProductRegistrationRequestsController } from "./product-registration-requests.controller.js";
 import { SuppliersController } from "./suppliers.controller.js";
 import { MaterialWithdrawalsController } from "./material-withdrawals.controller.js";
+import { UsersController } from "./users.controller.js";
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { MaterialWithdrawalsController } from "./material-withdrawals.controller
     ProductRegistrationRequestsController,
     SuppliersController,
     MaterialWithdrawalsController,
+    UsersController,
   ],
   providers: [PrismaService, AuthGuard],
 })

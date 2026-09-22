@@ -9,10 +9,11 @@ import {
   Clock3,
   PackageMinus,
   Plus,
+  Printer,
   Search,
   Trash2,
 } from "lucide-react";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 type CatalogProduct = {
   id: string;
@@ -92,7 +93,9 @@ const statusInfo = {
 export function MaterialWithdrawals({ role }: { role: string }) {
   const cache = useQueryClient();
   const warehouse = ["ADMIN", "ALMOXARIFADO"].includes(role);
-  const [tab, setTab] = useState<"request" | "queue" | "history">("request");
+  const [tab, setTab] = useState<"request" | "queue" | "history" | "print">(
+    "request",
+  );
   const [search, setSearch] = useState("");
   const [historySearch, setHistorySearch] = useState("");
   const [purpose, setPurpose] = useState("");
@@ -103,6 +106,9 @@ export function MaterialWithdrawals({ role }: { role: string }) {
   const [canceling, setCanceling] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [message, setMessage] = useState("");
+  const [printId, setPrintId] = useState("");
+  const [printPrompt, setPrintPrompt] = useState<Withdrawal | null>(null);
+  const [printWhenReady, setPrintWhenReady] = useState("");
 
   const catalog = useQuery({
     queryKey: ["withdrawal-catalog", search],
@@ -163,6 +169,8 @@ export function MaterialWithdrawals({ role }: { role: string }) {
       setMessage(
         `${created.number} criada. Os materiais estão reservados até o prazo informado.`,
       );
+      setPrintId(created.id);
+      setPrintPrompt(created);
       await refresh();
       setTab(warehouse ? "queue" : "history");
     },
@@ -202,6 +210,22 @@ export function MaterialWithdrawals({ role }: { role: string }) {
       ? withdrawals.data?.length || 0
       : withdrawals.data?.filter((item) => item.status === "PENDENTE").length ||
         0;
+  const printableWithdrawal =
+    withdrawals.data?.find((item) => item.id === printId) ||
+    withdrawals.data?.[0];
+  useEffect(() => {
+    if (
+      !printWhenReady ||
+      tab !== "print" ||
+      printableWithdrawal?.id !== printWhenReady
+    )
+      return;
+    const timer = window.setTimeout(() => {
+      setPrintWhenReady("");
+      window.print();
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [printWhenReady, printableWithdrawal?.id, tab]);
 
   return (
     <div className="space-y-6">
@@ -242,7 +266,7 @@ export function MaterialWithdrawals({ role }: { role: string }) {
       </section>
 
       <nav
-        className={`grid gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm ${warehouse ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+        className={`grid gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm ${warehouse ? "sm:grid-cols-4" : "sm:grid-cols-3"}`}
       >
         <TabButton
           active={tab === "request"}
@@ -267,12 +291,61 @@ export function MaterialWithdrawals({ role }: { role: string }) {
           detail="Reservas e movimentações"
           onClick={() => setTab("history")}
         />
+        <TabButton
+          active={tab === "print"}
+          icon={<Printer size={19} />}
+          title="Impressão"
+          detail="Termo com assinatura"
+          onClick={() => setTab("print")}
+        />
       </nav>
 
       {message && (
         <p className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-800">
           <CheckCircle2 size={18} /> {message}
         </p>
+      )}
+
+      {printPrompt && (
+        <div className="fixed inset-0 z-[90] grid place-items-center bg-slate-950/65 p-4 backdrop-blur-sm">
+          <section className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="bg-blue-950 px-6 py-5 text-white">
+              <Printer size={24} className="text-blue-300" />
+              <h2 className="mt-3 text-xl font-bold">Imprimir a retirada?</h2>
+              <p className="mt-1 text-sm text-blue-100">
+                A retirada {printPrompt.number} foi criada e os materiais já
+                estão reservados.
+              </p>
+            </div>
+            <div className="p-6">
+              <p className="text-sm leading-6 text-slate-600">
+                Deseja abrir agora o termo com os materiais e os campos de
+                assinatura?
+              </p>
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  type="button"
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                  onClick={() => setPrintPrompt(null)}
+                >
+                  Agora não
+                </button>
+                <button
+                  type="button"
+                  className="button"
+                  onClick={() => {
+                    setPrintWhenReady(printPrompt.id);
+                    setPrintId(printPrompt.id);
+                    setPrintPrompt(null);
+                    setTab("print");
+                  }}
+                >
+                  <Printer size={17} /> Imprimir agora
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
       )}
 
       {tab === "request" ? (
@@ -493,6 +566,185 @@ export function MaterialWithdrawals({ role }: { role: string }) {
             </div>
           </aside>
         </form>
+      ) : tab === "print" ? (
+        <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+          <aside className="no-print h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:sticky xl:top-6">
+            <p className="text-xs font-bold uppercase tracking-[.14em] text-blue-700">
+              Documento de retirada
+            </p>
+            <h2 className="mt-1 text-lg font-bold text-slate-950">
+              Selecionar para impressão
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Escolha uma retirada para gerar o termo com os dados do sistema e
+              o campo de assinatura do colaborador.
+            </p>
+            {withdrawals.isLoading ? (
+              <p className="mt-5 text-sm text-slate-500">
+                Carregando retiradas...
+              </p>
+            ) : withdrawals.data?.length ? (
+              <>
+                <label className="mt-5 block text-sm font-semibold text-slate-700">
+                  Retirada
+                  <select
+                    className="input mt-2"
+                    value={printableWithdrawal?.id || ""}
+                    onChange={(event) => setPrintId(event.target.value)}
+                  >
+                    {withdrawals.data.map((withdrawal) => (
+                      <option key={withdrawal.id} value={withdrawal.id}>
+                        {withdrawal.number} — {withdrawal.requestedBy.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  className="button mt-5 h-11 w-full"
+                  onClick={() => window.print()}
+                >
+                  <Printer size={18} /> Imprimir termo
+                </button>
+              </>
+            ) : (
+              <p className="mt-5 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
+                Nenhuma retirada disponível para impressão.
+              </p>
+            )}
+          </aside>
+
+          {printableWithdrawal && (
+            <article
+              id="withdrawal-print"
+              className="withdrawal-print-sheet overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+            >
+              <header className="flex items-center justify-between gap-4 border-b-2 border-blue-900 px-5 py-3">
+                <img
+                  src="/erm-logo.png"
+                  alt="Estaleiro Rio Maguari"
+                  className="h-10 w-auto object-contain"
+                />
+                <div className="text-right">
+                  <p className="text-[9px] font-bold uppercase tracking-[.14em] text-blue-700">
+                    Controle de Almoxarifado
+                  </p>
+                  <h2 className="mt-0.5 text-lg font-bold text-slate-950">
+                    Termo de Retirada de Material
+                  </h2>
+                  <p className="mt-0.5 font-mono text-xs font-bold text-blue-800">
+                    {printableWithdrawal.number}
+                  </p>
+                </div>
+              </header>
+
+              <div className="space-y-4 p-5">
+                <section className="grid gap-x-5 gap-y-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3.5 sm:grid-cols-2 lg:grid-cols-3">
+                  <PrintField
+                    label="Solicitado por"
+                    value={printableWithdrawal.requestedBy.name}
+                  />
+                  <PrintField
+                    label="Data da solicitação"
+                    value={new Date(
+                      printableWithdrawal.requestedAt,
+                    ).toLocaleString("pt-BR")}
+                  />
+                  <PrintField
+                    label="Prazo da reserva"
+                    value={new Date(
+                      printableWithdrawal.expiresAt,
+                    ).toLocaleString("pt-BR")}
+                  />
+                  <PrintField
+                    label="Setor / destino"
+                    value={printableWithdrawal.destination}
+                  />
+                  <PrintField
+                    label="Obra"
+                    value={printableWithdrawal.workSite}
+                  />
+                  <PrintField
+                    label="Status"
+                    value={statusInfo[printableWithdrawal.status].label}
+                  />
+                  <div className="sm:col-span-2 lg:col-span-3">
+                    <PrintField
+                      label="Finalidade"
+                      value={printableWithdrawal.purpose}
+                    />
+                  </div>
+                  {printableWithdrawal.processedAt && (
+                    <>
+                      <PrintField
+                        label="Baixa realizada em"
+                        value={new Date(
+                          printableWithdrawal.processedAt,
+                        ).toLocaleString("pt-BR")}
+                      />
+                      <PrintField
+                        label="Baixa realizada por"
+                        value={
+                          printableWithdrawal.processedBy?.name ||
+                          "Não informado"
+                        }
+                      />
+                    </>
+                  )}
+                  {printableWithdrawal.cancelReason && (
+                    <div className="sm:col-span-2 lg:col-span-3">
+                      <PrintField
+                        label="Motivo do cancelamento"
+                        value={printableWithdrawal.cancelReason}
+                      />
+                    </div>
+                  )}
+                </section>
+
+                <section>
+                  <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-700">
+                    Materiais
+                  </h3>
+                  <div className="overflow-hidden rounded-lg border border-slate-300">
+                    <table className="w-full text-xs">
+                      <thead className="bg-slate-100 text-left text-[10px] uppercase text-slate-600">
+                        <tr>
+                          <th className="px-3 py-2">Código</th>
+                          <th className="px-3 py-2">Descrição</th>
+                          <th className="px-3 py-2 text-right">Quantidade</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {printableWithdrawal.items.map((item) => (
+                          <tr
+                            key={item.id}
+                            className="border-t border-slate-200"
+                          >
+                            <td className="px-3 py-2 font-mono text-[10px] font-bold">
+                              {item.product.code}
+                            </td>
+                            <td className="px-3 py-2">
+                              {item.product.genericDescription}
+                            </td>
+                            <td className="px-3 py-2 text-right font-bold">
+                              {formatNumber(item.quantity)}{" "}
+                              {item.product.unit || "UN"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+
+                <section className="grid gap-10 pt-8 sm:grid-cols-2">
+                  <SignatureField label="Assinatura do colaborador" />
+                  <SignatureField label="Responsável do Almoxarifado" />
+                </section>
+              </div>
+            </article>
+          )}
+        </div>
       ) : (
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-4 border-b bg-slate-50/70 p-5">
@@ -681,6 +933,31 @@ export function MaterialWithdrawals({ role }: { role: string }) {
           )}
         </section>
       )}
+    </div>
+  );
+}
+
+function PrintField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-[9px] font-bold uppercase tracking-wide text-slate-500">
+        {label}
+      </p>
+      <p className="mt-0.5 text-xs font-semibold text-slate-900">{value}</p>
+    </div>
+  );
+}
+
+function SignatureField({ label }: { label: string }) {
+  return (
+    <div className="pt-7 text-center">
+      <div className="border-t border-slate-700" />
+      <p className="mt-1.5 text-[10px] font-bold uppercase tracking-wide text-slate-700">
+        {label}
+      </p>
+      <p className="mt-0.5 text-[9px] text-slate-400">
+        Nome, data e assinatura
+      </p>
     </div>
   );
 }
