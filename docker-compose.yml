@@ -8,7 +8,16 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD}
       TZ: America/Sao_Paulo
     volumes: [postgres_data:/var/lib/postgresql/data]
-    healthcheck: { test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"], interval: 10s, timeout: 5s, retries: 10 }
+    shm_size: 256mb
+    healthcheck:
+      {
+        test:
+          ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"],
+        interval: 10s,
+        timeout: 5s,
+        retries: 10,
+      }
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
     networks: [internal]
   api:
     build: { context: ., dockerfile: apps/api/Dockerfile }
@@ -21,17 +30,39 @@ services:
       EXCEL_TEMPLATE_PATH: /app/templates/SOLICITACAO_DE_COMPRA_ERT_ERM.xlsx
       REPORTS_PATH: /app/reports
       ATTACHMENTS_PATH: /app/attachments
+      NODE_OPTIONS: --max-old-space-size=1024
       TZ: America/Sao_Paulo
-    volumes: [reports:/app/reports, attachments:/app/attachments, backups:/app/backups]
+    volumes:
+      [reports:/app/reports, attachments:/app/attachments, backups:/app/backups]
     depends_on: { postgres: { condition: service_healthy } }
-    healthcheck: { test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)process.exit(1)})"], interval: 15s, timeout: 5s, retries: 10 }
+    healthcheck:
+      {
+        test:
+          [
+            "CMD",
+            "node",
+            "-e",
+            "fetch('http://localhost:3000/health').then(r=>{if(!r.ok)process.exit(1)})",
+          ],
+        interval: 15s,
+        timeout: 5s,
+        retries: 10,
+      }
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
     networks: [internal]
   web:
     build: { context: ., dockerfile: apps/web/Dockerfile }
     restart: unless-stopped
     ports: ["${APP_PORT:-8080}:80"]
     depends_on: { api: { condition: service_healthy } }
-    healthcheck: { test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/health >/dev/null"], interval: 15s, timeout: 5s, retries: 10 }
+    healthcheck:
+      {
+        test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/health >/dev/null"],
+        interval: 15s,
+        timeout: 5s,
+        retries: 10,
+      }
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "5" } }
     networks: [internal]
 volumes:
   postgres_data:

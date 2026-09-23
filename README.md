@@ -45,7 +45,9 @@ O relatório consolidado é baixado por `GET /api/reports/consolidated?year=2026
 
 ## Backup e restauração
 
-No PowerShell, carregue as variáveis do `.env` e execute `.\scripts\backup\backup.ps1`. Para restaurar, use `.\scripts\restore\restore.ps1 -BackupFile .\backups\arquivo.sql`. Restauração substitui dados e deve ser feita em janela de manutenção.
+No PowerShell, execute `.\scripts\backup\backup.ps1`. O pacote inclui banco, anexos, relatórios, manifesto e verificação SHA-256. Para instalar a rotina diária, use `.\scripts\backup\install-daily-backup.ps1`; para restaurar, use `.\scripts\backup\restore.ps1 -BackupFile .\backups\arquivo.zip`. A restauração substitui dados e deve ser feita em janela de manutenção.
+
+O passo a passo completo está em [Instalação do ERM na rede interna — Windows 10](docs/INSTALACAO_WINDOWS_10_REDE.md). A revisão para alto volume está em [Revisão de desempenho e escalabilidade](docs/REVISAO_ESCALABILIDADE.md).
 
 ## Qualidade
 

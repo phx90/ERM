@@ -87,6 +87,7 @@ model User {
   processedWithdrawals        MaterialWithdrawal[]         @relation("WithdrawalProcessedBy")
 
   @@unique([organizationId, login])
+  @@index([organizationId, active, name])
 }
 
 model ProductRegistrationRequest {
@@ -126,6 +127,7 @@ model MaterialWithdrawal {
 
   @@unique([organizationId, number])
   @@index([organizationId, status, expiresAt])
+  @@index([organizationId, requestedAt])
   @@index([requestedById, requestedAt])
 }
 
@@ -151,6 +153,8 @@ model Session {
   expiresAt        DateTime
   revokedAt        DateTime?
   createdAt        DateTime  @default(now())
+
+  @@index([userId, expiresAt])
 }
 
 model Department {
@@ -246,6 +250,8 @@ model PurchaseRequest {
 
   @@unique([organizationId, number])
   @@index([organizationId, requestDate])
+  @@index([organizationId, deletedAt, requestDate])
+  @@index([organizationId, aggregateStatus, requestDate])
 }
 
 model PurchaseRequestItem {
@@ -274,6 +280,10 @@ model PurchaseRequestItem {
   deletedAt         DateTime?
   allocations       PurchaseAllocation[]
   statusHistory     StatusHistory[]
+
+  @@index([requestId, deletedAt])
+  @@index([statusId, deletedAt])
+  @@index([productId])
 }
 
 model Supplier {
@@ -306,6 +316,7 @@ model Supplier {
 
   @@unique([organizationId, normalizedName])
   @@index([organizationId, cnpj])
+  @@index([organizationId, active, legalName])
 }
 
 model PurchaseOrder {
@@ -329,6 +340,9 @@ model PurchaseOrder {
   deliveries     Delivery[]
 
   @@unique([organizationId, number])
+  @@index([organizationId, deletedAt, createdAt])
+  @@index([organizationId, status, createdAt])
+  @@index([supplierId])
 }
 
 model PurchaseOrderItem {
@@ -343,6 +357,9 @@ model PurchaseOrderItem {
   unitPrice     Decimal?             @db.Decimal(15, 4)
   allocations   PurchaseAllocation[]
   deliveryItems DeliveryItem[]
+
+  @@index([orderId])
+  @@index([productId])
 }
 
 model PurchaseAllocation {
@@ -354,6 +371,7 @@ model PurchaseAllocation {
   quantity      Decimal             @db.Decimal(15, 3)
 
   @@unique([requestItemId, orderItemId])
+  @@index([orderItemId])
 }
 
 model Delivery {
@@ -370,6 +388,7 @@ model Delivery {
   attachments   Attachment[]
 
   @@unique([orderId, invoiceNumber])
+  @@index([orderId, deliveredAt])
 }
 
 model DeliveryItem {
@@ -380,6 +399,9 @@ model DeliveryItem {
   orderItem     PurchaseOrderItem @relation(fields: [orderItemId], references: [id])
   quantity      Decimal           @db.Decimal(15, 3)
   stockMovement StockMovement?
+
+  @@index([deliveryId])
+  @@index([orderItemId])
 }
 
 model StockMovement {
@@ -413,6 +435,8 @@ model StatusHistory {
   userId         String
   note           String?
   createdAt      DateTime            @default(now())
+
+  @@index([requestItemId, createdAt])
 }
 
 model AuditLog {
@@ -462,6 +486,9 @@ model Attachment {
   size         Int
   sha256       String
   createdAt    DateTime         @default(now())
+
+  @@index([requestId])
+  @@index([deliveryId])
 }
 
 model ReportGeneration {

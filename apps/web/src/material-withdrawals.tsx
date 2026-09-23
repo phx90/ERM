@@ -14,6 +14,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useDebouncedValue } from "./use-debounced-value";
 
 type CatalogProduct = {
   id: string;
@@ -47,6 +48,12 @@ type Withdrawal = {
       unit?: string;
     };
   }>;
+};
+type PageResult<T> = {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
 };
 
 const formatNumber = (value: string | number) =>
@@ -90,6 +97,46 @@ const statusInfo = {
   EXPIRADA: { label: "Reserva expirada", style: "bg-red-50 text-red-700" },
 };
 
+function WithdrawalsPagination({
+  page,
+  pageSize,
+  total,
+  onChange,
+}: {
+  page: number;
+  pageSize: number;
+  total: number;
+  onChange: (page: number) => void;
+}) {
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  if (pages <= 1) return null;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-5 py-4 text-sm">
+      <span className="text-slate-500">
+        Página {page} de {pages} · {total} retirada(s)
+      </span>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          className="rounded-lg border border-slate-200 px-3 py-2 font-semibold disabled:opacity-40"
+          disabled={page <= 1}
+          onClick={() => onChange(page - 1)}
+        >
+          Anterior
+        </button>
+        <button
+          type="button"
+          className="rounded-lg border border-slate-200 px-3 py-2 font-semibold disabled:opacity-40"
+          disabled={page >= pages}
+          onClick={() => onChange(page + 1)}
+        >
+          Próxima
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function MaterialWithdrawals({ role }: { role: string }) {
   const cache = useQueryClient();
   const warehouse = ["ADMIN", "ALMOXARIFADO"].includes(role);
@@ -109,23 +156,28 @@ export function MaterialWithdrawals({ role }: { role: string }) {
   const [printId, setPrintId] = useState("");
   const [printPrompt, setPrintPrompt] = useState<Withdrawal | null>(null);
   const [printWhenReady, setPrintWhenReady] = useState("");
+  const [page, setPage] = useState(1);
+  const debouncedSearch = useDebouncedValue(search);
+  const debouncedHistorySearch = useDebouncedValue(historySearch);
+  const pageSize = 20;
 
   const catalog = useQuery({
-    queryKey: ["withdrawal-catalog", search],
+    queryKey: ["withdrawal-catalog", debouncedSearch],
     queryFn: () =>
       withdrawalApi<CatalogProduct[]>(
-        `/catalog?q=${encodeURIComponent(search)}`,
+        `/catalog?q=${encodeURIComponent(debouncedSearch)}`,
       ),
     enabled: tab === "request",
   });
   const withdrawals = useQuery({
-    queryKey: ["material-withdrawals", tab, historySearch],
+    queryKey: ["material-withdrawals", tab, debouncedHistorySearch, page],
     queryFn: () =>
-      withdrawalApi<Withdrawal[]>(
-        `?q=${encodeURIComponent(historySearch)}${tab === "queue" ? "&status=PENDENTE" : ""}`,
+      withdrawalApi<PageResult<Withdrawal>>(
+        `?q=${encodeURIComponent(debouncedHistorySearch)}&page=${page}&pageSize=${pageSize}${tab === "queue" ? "&status=PENDENTE" : ""}`,
       ),
     enabled: tab !== "request",
     refetchInterval: tab === "queue" ? 20_000 : 60_000,
+    placeholderData: (previous) => previous,
   });
   const selectedItems = useMemo(
     () =>
@@ -207,12 +259,12 @@ export function MaterialWithdrawals({ role }: { role: string }) {
   };
   const pendingCount =
     tab === "queue"
-      ? withdrawals.data?.length || 0
-      : withdrawals.data?.filter((item) => item.status === "PENDENTE").length ||
-        0;
+      ? withdrawals.data?.total || 0
+      : withdrawals.data?.data.filter((item) => item.status === "PENDENTE")
+          .length || 0;
   const printableWithdrawal =
-    withdrawals.data?.find((item) => item.id === printId) ||
-    withdrawals.data?.[0];
+    withdrawals.data?.data.find((item) => item.id === printId) ||
+    withdrawals.data?.data[0];
   useEffect(() => {
     if (
       !printWhenReady ||
@@ -273,7 +325,10 @@ export function MaterialWithdrawals({ role }: { role: string }) {
           icon={<Plus size={19} />}
           title="Nova retirada"
           detail="Consultar e reservar"
-          onClick={() => setTab("request")}
+          onClick={() => {
+            setPage(1);
+            setTab("request");
+          }}
         />
         {warehouse && (
           <TabButton
@@ -281,7 +336,10 @@ export function MaterialWithdrawals({ role }: { role: string }) {
             icon={<ClipboardCheck size={19} />}
             title="Baixas pendentes"
             detail="Confirmar entrega"
-            onClick={() => setTab("queue")}
+            onClick={() => {
+              setPage(1);
+              setTab("queue");
+            }}
           />
         )}
         <TabButton
@@ -289,14 +347,20 @@ export function MaterialWithdrawals({ role }: { role: string }) {
           icon={<Clock3 size={19} />}
           title={warehouse ? "Histórico" : "Minhas retiradas"}
           detail="Reservas e movimentações"
-          onClick={() => setTab("history")}
+          onClick={() => {
+            setPage(1);
+            setTab("history");
+          }}
         />
         <TabButton
           active={tab === "print"}
           icon={<Printer size={19} />}
           title="Impressão"
           detail="Termo com assinatura"
-          onClick={() => setTab("print")}
+          onClick={() => {
+            setPage(1);
+            setTab("print");
+          }}
         />
       </nav>
 
@@ -583,7 +647,7 @@ export function MaterialWithdrawals({ role }: { role: string }) {
               <p className="mt-5 text-sm text-slate-500">
                 Carregando retiradas...
               </p>
-            ) : withdrawals.data?.length ? (
+            ) : withdrawals.data?.data.length ? (
               <>
                 <label className="mt-5 block text-sm font-semibold text-slate-700">
                   Retirada
@@ -592,7 +656,7 @@ export function MaterialWithdrawals({ role }: { role: string }) {
                     value={printableWithdrawal?.id || ""}
                     onChange={(event) => setPrintId(event.target.value)}
                   >
-                    {withdrawals.data.map((withdrawal) => (
+                    {withdrawals.data.data.map((withdrawal) => (
                       <option key={withdrawal.id} value={withdrawal.id}>
                         {withdrawal.number} — {withdrawal.requestedBy.name}
                       </option>
@@ -768,7 +832,10 @@ export function MaterialWithdrawals({ role }: { role: string }) {
               <input
                 className="input h-11 pl-11"
                 value={historySearch}
-                onChange={(event) => setHistorySearch(event.target.value)}
+                onChange={(event) => {
+                  setHistorySearch(event.target.value);
+                  setPage(1);
+                }}
                 placeholder="Buscar número, obra, finalidade ou material"
               />
             </label>
@@ -777,145 +844,153 @@ export function MaterialWithdrawals({ role }: { role: string }) {
             <p className="p-10 text-center text-sm text-slate-500">
               Carregando retiradas...
             </p>
-          ) : withdrawals.data?.length ? (
-            <div className="space-y-4 bg-slate-50/50 p-4 sm:p-6">
-              {withdrawals.data.map((withdrawal) => {
-                const info = statusInfo[withdrawal.status];
-                return (
-                  <article
-                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-                    key={withdrawal.id}
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="font-bold text-blue-700">
-                            {withdrawal.number}
-                          </h3>
-                          <span
-                            className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${info.style}`}
+          ) : withdrawals.data?.data.length ? (
+            <div className="bg-slate-50/50">
+              <div className="space-y-4 p-4 sm:p-6">
+                {withdrawals.data.data.map((withdrawal) => {
+                  const info = statusInfo[withdrawal.status];
+                  return (
+                    <article
+                      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+                      key={withdrawal.id}
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="font-bold text-blue-700">
+                              {withdrawal.number}
+                            </h3>
+                            <span
+                              className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${info.style}`}
+                            >
+                              {info.label}
+                            </span>
+                          </div>
+                          <p className="mt-2 font-semibold text-slate-900">
+                            {withdrawal.purpose}
+                          </p>
+                          <p className="mt-1 text-xs text-slate-500">
+                            {withdrawal.requestedBy.name} ·{" "}
+                            {withdrawal.destination}
+                          </p>
+                          <p className="mt-1 text-xs font-semibold text-blue-700">
+                            Obra: {withdrawal.workSite}
+                          </p>
+                        </div>
+                        <div className="text-right text-xs text-slate-500">
+                          <p className="flex items-center gap-1.5">
+                            <CalendarClock size={14} />
+                            Reserva até{" "}
+                            {new Date(withdrawal.expiresAt).toLocaleString(
+                              "pt-BR",
+                            )}
+                          </p>
+                          <p className="mt-1">
+                            Solicitada em{" "}
+                            {new Date(withdrawal.requestedAt).toLocaleString(
+                              "pt-BR",
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="divide-y divide-slate-100 px-5">
+                        {withdrawal.items.map((item) => (
+                          <div
+                            className="grid gap-2 py-3 sm:grid-cols-[120px_minmax(0,1fr)_140px] sm:items-center"
+                            key={item.id}
                           >
-                            {info.label}
-                          </span>
-                        </div>
-                        <p className="mt-2 font-semibold text-slate-900">
-                          {withdrawal.purpose}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-500">
-                          {withdrawal.requestedBy.name} ·{" "}
-                          {withdrawal.destination}
-                        </p>
-                        <p className="mt-1 text-xs font-semibold text-blue-700">
-                          Obra: {withdrawal.workSite}
-                        </p>
+                            <span className="font-mono text-xs font-bold text-slate-500">
+                              {item.product.code}
+                            </span>
+                            <span className="text-sm font-medium text-slate-800">
+                              {item.product.genericDescription}
+                            </span>
+                            <strong className="text-sm text-blue-700 sm:text-right">
+                              {formatNumber(item.quantity)}{" "}
+                              {item.product.unit || "UN"}
+                            </strong>
+                          </div>
+                        ))}
                       </div>
-                      <div className="text-right text-xs text-slate-500">
-                        <p className="flex items-center gap-1.5">
-                          <CalendarClock size={14} />
-                          Reserva até{" "}
-                          {new Date(withdrawal.expiresAt).toLocaleString(
-                            "pt-BR",
-                          )}
+                      {withdrawal.cancelReason && (
+                        <p className="mx-5 mb-4 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
+                          Motivo do cancelamento: {withdrawal.cancelReason}
                         </p>
-                        <p className="mt-1">
-                          Solicitada em{" "}
-                          {new Date(withdrawal.requestedAt).toLocaleString(
-                            "pt-BR",
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="divide-y divide-slate-100 px-5">
-                      {withdrawal.items.map((item) => (
-                        <div
-                          className="grid gap-2 py-3 sm:grid-cols-[120px_minmax(0,1fr)_140px] sm:items-center"
-                          key={item.id}
-                        >
-                          <span className="font-mono text-xs font-bold text-slate-500">
-                            {item.product.code}
-                          </span>
-                          <span className="text-sm font-medium text-slate-800">
-                            {item.product.genericDescription}
-                          </span>
-                          <strong className="text-sm text-blue-700 sm:text-right">
-                            {formatNumber(item.quantity)}{" "}
-                            {item.product.unit || "UN"}
-                          </strong>
-                        </div>
-                      ))}
-                    </div>
-                    {withdrawal.cancelReason && (
-                      <p className="mx-5 mb-4 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
-                        Motivo do cancelamento: {withdrawal.cancelReason}
-                      </p>
-                    )}
-                    {withdrawal.status === "PENDENTE" && (
-                      <div className="flex flex-wrap items-center justify-end gap-3 border-t border-slate-100 bg-slate-50/60 px-5 py-4">
-                        {canceling === withdrawal.id ? (
-                          <>
-                            <input
-                              className="input h-10 min-w-64 flex-1"
-                              value={cancelReason}
-                              onChange={(event) =>
-                                setCancelReason(event.target.value)
-                              }
-                              placeholder="Motivo do cancelamento"
-                              minLength={3}
-                              maxLength={500}
-                            />
-                            <button
-                              type="button"
-                              className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-                              onClick={() => {
-                                setCanceling(null);
-                                setCancelReason("");
-                              }}
-                            >
-                              Voltar
-                            </button>
-                            <button
-                              type="button"
-                              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
-                              disabled={
-                                cancelReason.trim().length < 3 ||
-                                cancelWithdrawal.isPending
-                              }
-                              onClick={() =>
-                                cancelWithdrawal.mutate(withdrawal.id)
-                              }
-                            >
-                              Confirmar cancelamento
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              type="button"
-                              className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
-                              onClick={() => setCanceling(withdrawal.id)}
-                            >
-                              <Ban size={16} /> Cancelar e liberar reserva
-                            </button>
-                            {warehouse && (
+                      )}
+                      {withdrawal.status === "PENDENTE" && (
+                        <div className="flex flex-wrap items-center justify-end gap-3 border-t border-slate-100 bg-slate-50/60 px-5 py-4">
+                          {canceling === withdrawal.id ? (
+                            <>
+                              <input
+                                className="input h-10 min-w-64 flex-1"
+                                value={cancelReason}
+                                onChange={(event) =>
+                                  setCancelReason(event.target.value)
+                                }
+                                placeholder="Motivo do cancelamento"
+                                minLength={3}
+                                maxLength={500}
+                              />
                               <button
                                 type="button"
-                                className="button"
-                                disabled={completeWithdrawal.isPending}
+                                className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                                onClick={() => {
+                                  setCanceling(null);
+                                  setCancelReason("");
+                                }}
+                              >
+                                Voltar
+                              </button>
+                              <button
+                                type="button"
+                                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                                disabled={
+                                  cancelReason.trim().length < 3 ||
+                                  cancelWithdrawal.isPending
+                                }
                                 onClick={() =>
-                                  completeWithdrawal.mutate(withdrawal.id)
+                                  cancelWithdrawal.mutate(withdrawal.id)
                                 }
                               >
-                                <ClipboardCheck size={17} />
-                                Dar baixa na retirada
+                                Confirmar cancelamento
                               </button>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </article>
-                );
-              })}
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50"
+                                onClick={() => setCanceling(withdrawal.id)}
+                              >
+                                <Ban size={16} /> Cancelar e liberar reserva
+                              </button>
+                              {warehouse && (
+                                <button
+                                  type="button"
+                                  className="button"
+                                  disabled={completeWithdrawal.isPending}
+                                  onClick={() =>
+                                    completeWithdrawal.mutate(withdrawal.id)
+                                  }
+                                >
+                                  <ClipboardCheck size={17} />
+                                  Dar baixa na retirada
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+              <WithdrawalsPagination
+                page={withdrawals.data.page}
+                pageSize={withdrawals.data.pageSize}
+                total={withdrawals.data.total}
+                onChange={setPage}
+              />
             </div>
           ) : (
             <div className="p-12 text-center">

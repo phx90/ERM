@@ -1,0 +1,31 @@
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE INDEX "User_organizationId_active_name_idx" ON "User"("organizationId", "active", "name");
+CREATE INDEX "MaterialWithdrawal_organizationId_requestedAt_idx" ON "MaterialWithdrawal"("organizationId", "requestedAt");
+CREATE INDEX "Session_userId_expiresAt_idx" ON "Session"("userId", "expiresAt");
+CREATE INDEX "PurchaseRequest_organizationId_deletedAt_requestDate_idx" ON "PurchaseRequest"("organizationId", "deletedAt", "requestDate");
+CREATE INDEX "PurchaseRequest_organizationId_aggregateStatus_requestDate_idx" ON "PurchaseRequest"("organizationId", "aggregateStatus", "requestDate");
+CREATE INDEX "PurchaseRequestItem_requestId_deletedAt_idx" ON "PurchaseRequestItem"("requestId", "deletedAt");
+CREATE INDEX "PurchaseRequestItem_statusId_deletedAt_idx" ON "PurchaseRequestItem"("statusId", "deletedAt");
+CREATE INDEX "PurchaseRequestItem_productId_idx" ON "PurchaseRequestItem"("productId");
+CREATE INDEX "Supplier_organizationId_active_legalName_idx" ON "Supplier"("organizationId", "active", "legalName");
+CREATE INDEX "PurchaseOrder_organizationId_deletedAt_createdAt_idx" ON "PurchaseOrder"("organizationId", "deletedAt", "createdAt");
+CREATE INDEX "PurchaseOrder_organizationId_status_createdAt_idx" ON "PurchaseOrder"("organizationId", "status", "createdAt");
+CREATE INDEX "PurchaseOrder_supplierId_idx" ON "PurchaseOrder"("supplierId");
+CREATE INDEX "PurchaseOrderItem_orderId_idx" ON "PurchaseOrderItem"("orderId");
+CREATE INDEX "PurchaseAllocation_orderItemId_idx" ON "PurchaseAllocation"("orderItemId");
+CREATE INDEX "Delivery_orderId_deliveredAt_idx" ON "Delivery"("orderId", "deliveredAt");
+CREATE INDEX "DeliveryItem_deliveryId_idx" ON "DeliveryItem"("deliveryId");
+CREATE INDEX "DeliveryItem_orderItemId_idx" ON "DeliveryItem"("orderItemId");
+CREATE INDEX "StatusHistory_requestItemId_createdAt_idx" ON "StatusHistory"("requestItemId", "createdAt");
+CREATE INDEX "Attachment_requestId_idx" ON "Attachment"("requestId");
+CREATE INDEX "Attachment_deliveryId_idx" ON "Attachment"("deliveryId");
+
+CREATE INDEX "Product_genericDescription_trgm_idx" ON "Product" USING GIN ("genericDescription" gin_trgm_ops);
+CREATE INDEX "PurchaseRequest_requesterOriginal_trgm_idx" ON "PurchaseRequest" USING GIN ("requesterOriginal" gin_trgm_ops);
+CREATE INDEX "PurchaseRequestItem_description_trgm_idx" ON "PurchaseRequestItem" USING GIN ("description" gin_trgm_ops);
+CREATE INDEX "PurchaseRequestItem_manualCode_trgm_idx" ON "PurchaseRequestItem" USING GIN ("manualCode" gin_trgm_ops);
+CREATE INDEX "Supplier_legalName_trgm_idx" ON "Supplier" USING GIN ("legalName" gin_trgm_ops);
+CREATE INDEX "Supplier_tradeName_trgm_idx" ON "Supplier" USING GIN ("tradeName" gin_trgm_ops);
+CREATE INDEX "MaterialWithdrawal_purpose_trgm_idx" ON "MaterialWithdrawal" USING GIN ("purpose" gin_trgm_ops);
+CREATE INDEX "MaterialWithdrawal_workSite_trgm_idx" ON "MaterialWithdrawal" USING GIN ("workSite" gin_trgm_ops);

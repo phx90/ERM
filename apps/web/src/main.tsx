@@ -1,10 +1,11 @@
-import { Stock } from "./stock";
-import { Purchases } from "./purchases";
-import { ProductRegistrationRequests } from "./product-registration-requests";
-import { Suppliers } from "./suppliers";
-import { MaterialWithdrawals } from "./material-withdrawals";
-import { Users } from "./users";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  lazy,
+  Suspense,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { createRoot } from "react-dom/client";
 import {
   QueryClient,
@@ -57,9 +58,42 @@ import {
   type PurchaseRequestInput,
 } from "@compras/shared";
 import type { z } from "zod";
+import { useDebouncedValue } from "./use-debounced-value";
 import "./index.css";
 
-const queryClient = new QueryClient();
+const Stock = lazy(() =>
+  import("./stock").then((module) => ({ default: module.Stock })),
+);
+const Purchases = lazy(() =>
+  import("./purchases").then((module) => ({ default: module.Purchases })),
+);
+const ProductRegistrationRequests = lazy(() =>
+  import("./product-registration-requests").then((module) => ({
+    default: module.ProductRegistrationRequests,
+  })),
+);
+const Suppliers = lazy(() =>
+  import("./suppliers").then((module) => ({ default: module.Suppliers })),
+);
+const MaterialWithdrawals = lazy(() =>
+  import("./material-withdrawals").then((module) => ({
+    default: module.MaterialWithdrawals,
+  })),
+);
+const Users = lazy(() =>
+  import("./users").then((module) => ({ default: module.Users })),
+);
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      gcTime: 5 * 60_000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`/api${path}`, {
     ...init,
@@ -881,6 +915,7 @@ type RequestDetail = {
 };
 function Requests() {
   const [q, setQ] = useState("");
+  const debouncedQ = useDebouncedValue(q);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [status, setStatus] = useState("");
@@ -891,7 +926,15 @@ function Requests() {
   const [selectedStatusId, setSelectedStatusId] = useState("");
   const [statusNote, setStatusNote] = useState("");
   const { data, isLoading } = useQuery({
-    queryKey: ["requests", q, page, pageSize, status, criticality, sortDir],
+    queryKey: [
+      "requests",
+      debouncedQ,
+      page,
+      pageSize,
+      status,
+      criticality,
+      sortDir,
+    ],
     queryFn: () =>
       api<{
         data: Array<{
@@ -907,8 +950,9 @@ function Requests() {
         total: number;
         pageSize: number;
       }>(
-        `/requests?q=${encodeURIComponent(q)}&page=${page}&pageSize=${pageSize}&status=${encodeURIComponent(status)}&criticality=${criticality}&sortDir=${sortDir}`,
+        `/requests?q=${encodeURIComponent(debouncedQ)}&page=${page}&pageSize=${pageSize}&status=${encodeURIComponent(status)}&criticality=${criticality}&sortDir=${sortDir}`,
       ),
+    placeholderData: (previous) => previous,
   });
   const detail = useQuery({
     queryKey: ["request-detail", selectedId],
@@ -1387,6 +1431,7 @@ type ProductForm = {
 function Products({ role }: { role: string }) {
   const canManage = role === "COMPRAS";
   const [q, setQ] = useState("");
+  const debouncedQ = useDebouncedValue(q);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
   const [page, setPage] = useState(1);
@@ -1415,11 +1460,21 @@ function Products({ role }: { role: string }) {
     formState: { errors },
   } = useForm<ProductForm>({ defaultValues: { unit: "UN", stockBalance: 0 } });
   const products = useQuery({
-    queryKey: ["products", q, page, pageSize, group, stock, sortBy, sortDir],
+    queryKey: [
+      "products",
+      debouncedQ,
+      page,
+      pageSize,
+      group,
+      stock,
+      sortBy,
+      sortDir,
+    ],
     queryFn: () =>
       api<{ data: Product[]; total: number }>(
-        `/products?q=${encodeURIComponent(q)}&page=${page}&limit=${pageSize}&group=${encodeURIComponent(group)}&stock=${stock}&sortBy=${sortBy}&sortDir=${sortDir}`,
+        `/products?q=${encodeURIComponent(debouncedQ)}&page=${page}&limit=${pageSize}&group=${encodeURIComponent(group)}&stock=${stock}&sortBy=${sortBy}&sortDir=${sortDir}`,
       ),
+    placeholderData: (previous) => previous,
   });
   const stockSummary = useQuery({
     queryKey: ["stock", "catalog-summary"],
@@ -2355,66 +2410,77 @@ function ProtectedApp() {
     <AuthContext.Provider value={{ user: data.user, logout }}>
       {data.user.mustChangePassword && <ChangePassword />}
       <Shell>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/estoque" element={<Stock role={data.user.role} />} />
-          <Route
-            path="/produtos"
-            element={<Products role={data.user.role} />}
-          />
-          <Route path="/solicitacoes" element={<Requests />} />
-          <Route
-            path="/nova"
-            element={<NewRequestAccess role={data.user.role} />}
-          />
-          <Route
-            path="/compras"
-            element={<Purchases role={data.user.role} />}
-          />
-          <Route
-            path="/fornecedores"
-            element={
-              ["ADMIN", "COMPRAS"].includes(data.user.role) ? (
-                <Suppliers role={data.user.role} />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route
-            path="/retiradas"
-            element={
-              data.user.role !== "CONSULTA" ? (
-                <MaterialWithdrawals role={data.user.role} />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route
-            path="/solicitar-cadastro"
-            element={
-              ["ADMIN", "ALMOXARIFADO"].includes(data.user.role) ? (
-                <ProductRegistrationRequests />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route path="/relatorios" element={<Reports />} />
-          <Route
-            path="/usuarios"
-            element={
-              data.user.role === "ADMIN" ? (
-                <Users />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route path="/auditoria" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+        <Suspense
+          fallback={
+            <div className="grid min-h-64 place-items-center rounded-2xl border border-slate-200 bg-white">
+              <div className="text-center">
+                <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                <p className="text-sm text-slate-500">Carregando módulo…</p>
+              </div>
+            </div>
+          }
+        >
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/estoque" element={<Stock role={data.user.role} />} />
+            <Route
+              path="/produtos"
+              element={<Products role={data.user.role} />}
+            />
+            <Route path="/solicitacoes" element={<Requests />} />
+            <Route
+              path="/nova"
+              element={<NewRequestAccess role={data.user.role} />}
+            />
+            <Route
+              path="/compras"
+              element={<Purchases role={data.user.role} />}
+            />
+            <Route
+              path="/fornecedores"
+              element={
+                ["ADMIN", "COMPRAS"].includes(data.user.role) ? (
+                  <Suppliers role={data.user.role} />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
+            />
+            <Route
+              path="/retiradas"
+              element={
+                data.user.role !== "CONSULTA" ? (
+                  <MaterialWithdrawals role={data.user.role} />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
+            />
+            <Route
+              path="/solicitar-cadastro"
+              element={
+                ["ADMIN", "ALMOXARIFADO"].includes(data.user.role) ? (
+                  <ProductRegistrationRequests />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
+            />
+            <Route path="/relatorios" element={<Reports />} />
+            <Route
+              path="/usuarios"
+              element={
+                data.user.role === "ADMIN" ? (
+                  <Users />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
+            />
+            <Route path="/auditoria" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Suspense>
       </Shell>
     </AuthContext.Provider>
   );

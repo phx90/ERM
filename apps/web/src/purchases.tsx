@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useDebouncedValue } from "./use-debounced-value";
 import {
   CalendarDays,
   Check,
@@ -68,6 +69,12 @@ type SupplierOption = {
   tradeName?: string;
   cnpj?: string;
 };
+type PageResult<T> = {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
 
 const number = (value: string | number) =>
   Number(value).toLocaleString("pt-BR", { maximumFractionDigits: 3 });
@@ -111,6 +118,46 @@ function statusStyle(status: string) {
   return "bg-blue-50 text-blue-700";
 }
 
+function Pagination({
+  page,
+  pageSize,
+  total,
+  onChange,
+}: {
+  page: number;
+  pageSize: number;
+  total: number;
+  onChange: (page: number) => void;
+}) {
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  if (pages <= 1) return null;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-5 py-4 text-sm">
+      <span className="text-slate-500">
+        Página {page} de {pages} · {total} registro(s)
+      </span>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          className="rounded-lg border border-slate-200 px-3 py-2 font-semibold text-slate-700 disabled:opacity-40"
+          disabled={page <= 1}
+          onClick={() => onChange(page - 1)}
+        >
+          Anterior
+        </button>
+        <button
+          type="button"
+          className="rounded-lg border border-slate-200 px-3 py-2 font-semibold text-slate-700 disabled:opacity-40"
+          disabled={page >= pages}
+          onClick={() => onChange(page + 1)}
+        >
+          Próxima
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function Purchases({
   role,
   mode = "receiving",
@@ -124,6 +171,8 @@ export function Purchases({
   const canReceive = ["ADMIN", "ALMOXARIFADO"].includes(role);
   const [tab, setTab] = useState<Tab>(planning ? "demand" : "orders");
   const [q, setQ] = useState("");
+  const [demandPage, setDemandPage] = useState(1);
+  const [orderPage, setOrderPage] = useState(1);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [quantities, setQuantities] = useState<Record<string, string>>({});
   const [prices, setPrices] = useState<Record<string, string>>({});
@@ -133,16 +182,26 @@ export function Purchases({
   const [carrier, setCarrier] = useState("");
   const [success, setSuccess] = useState("");
   const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const debouncedQ = useDebouncedValue(q);
+  const pageSize = 20;
 
   const demand = useQuery({
-    queryKey: ["purchase-demand"],
-    queryFn: () => request<DemandItem[]>("/demand"),
+    queryKey: ["purchase-demand", debouncedQ, demandPage],
+    queryFn: () =>
+      request<PageResult<DemandItem>>(
+        `/demand?q=${encodeURIComponent(debouncedQ)}&page=${demandPage}&pageSize=${pageSize}`,
+      ),
     enabled: planning,
+    placeholderData: (previous) => previous,
   });
   const orders = useQuery({
-    queryKey: ["purchase-orders", q],
-    queryFn: () => request<Order[]>(`/orders?q=${encodeURIComponent(q)}`),
+    queryKey: ["purchase-orders", debouncedQ, orderPage],
+    queryFn: () =>
+      request<PageResult<Order>>(
+        `/orders?q=${encodeURIComponent(debouncedQ)}&page=${orderPage}&pageSize=${pageSize}`,
+      ),
     enabled: tab === "orders",
+    placeholderData: (previous) => previous,
   });
   const suppliers = useQuery({
     queryKey: ["suppliers"],
@@ -157,7 +216,7 @@ export function Purchases({
     enabled: planning && canOrder,
   });
   const chosen = useMemo(
-    () => demand.data?.filter((item) => selected[item.id]) || [],
+    () => demand.data?.data.filter((item) => selected[item.id]) || [],
     [demand.data, selected],
   );
   const requestGroups = useMemo(() => {
@@ -172,7 +231,7 @@ export function Purchases({
         items: DemandItem[];
       }
     >();
-    for (const item of demand.data || []) {
+    for (const item of demand.data?.data || []) {
       const group = groups.get(item.request.id) || {
         id: item.request.id,
         number: item.request.number,
@@ -186,27 +245,21 @@ export function Purchases({
     }
     return [...groups.values()];
   }, [demand.data]);
-  const visibleRequestGroups = useMemo(() => {
-    const term = q.trim().toLocaleLowerCase("pt-BR");
-    if (!term) return requestGroups;
-    return requestGroups.filter(
-      (group) =>
-        group.number.toLocaleLowerCase("pt-BR").includes(term) ||
-        group.requesterOriginal?.toLocaleLowerCase("pt-BR").includes(term) ||
-        group.createdBy.name.toLocaleLowerCase("pt-BR").includes(term) ||
-        group.items.some((item) =>
-          `${item.description} ${item.product?.code || item.manualCode || ""}`
-            .toLocaleLowerCase("pt-BR")
-            .includes(term),
-        ),
-    );
-  }, [q, requestGroups]);
   const selectedRequestCount = requestGroups.filter((group) =>
     group.items.every((item) => selected[item.id]),
   ).length;
   const selectedRequestGroups = requestGroups.filter((group) =>
     group.items.every((item) => selected[item.id]),
   );
+  const clearDemandSelection = () => {
+    setSelected({});
+    setQuantities({});
+    setPrices({});
+  };
+  const changeDemandPage = (nextPage: number) => {
+    clearDemandSelection();
+    setDemandPage(nextPage);
+  };
   const createOrder = useMutation({
     mutationFn: () =>
       request<Order>("/orders", {
@@ -486,7 +539,11 @@ export function Purchases({
                   className="input h-11 pl-10"
                   placeholder="Buscar solicitação, código ou material"
                   value={q}
-                  onChange={(event) => setQ(event.target.value)}
+                  onChange={(event) => {
+                    setQ(event.target.value);
+                    clearDemandSelection();
+                    setDemandPage(1);
+                  }}
                 />
               </label>
             </div>
@@ -496,13 +553,13 @@ export function Purchases({
               </p>
             ) : demand.isError ? (
               <p className="p-6 text-red-700">{demand.error.message}</p>
-            ) : !visibleRequestGroups.length ? (
+            ) : !requestGroups.length ? (
               <p className="p-10 text-center text-slate-500">
                 Nenhuma solicitação pendente encontrada.
               </p>
             ) : (
               <div className="space-y-4 bg-slate-50/50 p-4 sm:p-6">
-                {visibleRequestGroups.map((group) => {
+                {requestGroups.map((group) => {
                   const checked = group.items.every(
                     (item) => selected[item.id],
                   );
@@ -638,6 +695,12 @@ export function Purchases({
                     </article>
                   );
                 })}
+                <Pagination
+                  page={demand.data?.page || demandPage}
+                  pageSize={demand.data?.pageSize || pageSize}
+                  total={demand.data?.total || 0}
+                  onChange={changeDemandPage}
+                />
               </div>
             )}
           </section>
@@ -905,7 +968,10 @@ export function Purchases({
                 className="input h-11 pl-10"
                 placeholder="Buscar pedido, fornecedor ou Nota Fiscal"
                 value={q}
-                onChange={(event) => setQ(event.target.value)}
+                onChange={(event) => {
+                  setQ(event.target.value);
+                  setOrderPage(1);
+                }}
               />
             </label>
           </div>
@@ -913,13 +979,13 @@ export function Purchases({
             <p className="p-8 text-center text-slate-500">
               Carregando pedidos…
             </p>
-          ) : !orders.data?.length ? (
+          ) : !orders.data?.data.length ? (
             <p className="p-10 text-center text-slate-500">
               Nenhum pedido encontrado.
             </p>
           ) : (
             <div className="divide-y">
-              {orders.data.map((item) => (
+              {orders.data.data.map((item) => (
                 <article key={item.id} className="p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -1020,6 +1086,12 @@ export function Purchases({
                   )}
                 </article>
               ))}
+              <Pagination
+                page={orders.data.page}
+                pageSize={orders.data.pageSize}
+                total={orders.data.total}
+                onChange={setOrderPage}
+              />
             </div>
           )}
         </section>

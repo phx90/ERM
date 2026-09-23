@@ -112,50 +112,60 @@ export class MaterialWithdrawalsController {
     @Req() req: AuthedRequest,
     @Query("status") status = "",
     @Query("q") q = "",
+    @Query("page") page = "1",
+    @Query("pageSize") pageSize = "20",
   ) {
     await this.expirePending(req.user.organizationId);
     const warehouse = warehouseRoles.includes(req.user.role);
-    return this.db.materialWithdrawal.findMany({
-      where: {
-        organizationId: req.user.organizationId,
-        ...(!warehouse ? { requestedById: req.user.sub } : {}),
-        ...(status &&
-        ["PENDENTE", "RETIRADA", "CANCELADA", "EXPIRADA"].includes(status)
-          ? {
-              status: status as
-                "PENDENTE" | "RETIRADA" | "CANCELADA" | "EXPIRADA",
-            }
-          : {}),
-        ...(q.trim()
-          ? {
-              OR: [
-                { number: { contains: q.trim(), mode: "insensitive" } },
-                { purpose: { contains: q.trim(), mode: "insensitive" } },
-                { workSite: { contains: q.trim(), mode: "insensitive" } },
-                {
-                  items: {
-                    some: {
-                      product: {
-                        genericDescription: {
-                          contains: q.trim(),
-                          mode: "insensitive",
-                        },
+    const currentPage = Math.max(1, Number.parseInt(page, 10) || 1);
+    const size = Math.min(50, Math.max(5, Number.parseInt(pageSize, 10) || 20));
+    const where: Prisma.MaterialWithdrawalWhereInput = {
+      organizationId: req.user.organizationId,
+      ...(!warehouse ? { requestedById: req.user.sub } : {}),
+      ...(status &&
+      ["PENDENTE", "RETIRADA", "CANCELADA", "EXPIRADA"].includes(status)
+        ? {
+            status: status as
+              "PENDENTE" | "RETIRADA" | "CANCELADA" | "EXPIRADA",
+          }
+        : {}),
+      ...(q.trim()
+        ? {
+            OR: [
+              { number: { contains: q.trim(), mode: "insensitive" } },
+              { purpose: { contains: q.trim(), mode: "insensitive" } },
+              { workSite: { contains: q.trim(), mode: "insensitive" } },
+              {
+                items: {
+                  some: {
+                    product: {
+                      genericDescription: {
+                        contains: q.trim(),
+                        mode: "insensitive",
                       },
                     },
                   },
                 },
-              ],
-            }
-          : {}),
-      },
-      include: {
-        requestedBy: { select: { name: true } },
-        processedBy: { select: { name: true } },
-        items: { include: { product: true } },
-      },
-      orderBy: { requestedAt: "desc" },
-      take: 200,
-    });
+              },
+            ],
+          }
+        : {}),
+    };
+    const [data, total] = await this.db.$transaction([
+      this.db.materialWithdrawal.findMany({
+        where,
+        include: {
+          requestedBy: { select: { name: true } },
+          processedBy: { select: { name: true } },
+          items: { include: { product: true } },
+        },
+        orderBy: { requestedAt: "desc" },
+        skip: (currentPage - 1) * size,
+        take: size,
+      }),
+      this.db.materialWithdrawal.count({ where }),
+    ]);
+    return { data, total, page: currentPage, pageSize: size };
   }
 
   @Post()

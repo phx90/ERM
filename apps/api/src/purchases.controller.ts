@@ -90,25 +90,74 @@ export class PurchasesController {
   }
 
   @Get("demand")
-  async demand(@Req() req: Authed, @Query("q") q = "") {
+  async demand(
+    @Req() req: Authed,
+    @Query("q") q = "",
+    @Query("page") page = "1",
+    @Query("pageSize") pageSize = "20",
+  ) {
+    const currentPage = Math.max(Number(page) || 1, 1);
+    const take = Math.min(Math.max(Number(pageSize) || 20, 5), 50);
+    const skip = (currentPage - 1) * take;
+    const term = q.trim();
+    const pattern = `%${term}%`;
+    const searchClause = term
+      ? Prisma.sql`AND (
+          pr."number" ILIKE ${pattern}
+          OR COALESCE(pr."requesterOriginal", '') ILIKE ${pattern}
+          OR creator."name" ILIKE ${pattern}
+          OR EXISTS (
+            SELECT 1 FROM "PurchaseRequestItem" search_item
+            WHERE search_item."requestId" = pr."id"
+              AND search_item."deletedAt" IS NULL
+              AND (
+                search_item."description" ILIKE ${pattern}
+                OR COALESCE(search_item."manualCode", '') ILIKE ${pattern}
+              )
+          )
+        )`
+      : Prisma.empty;
+    const openDemand = Prisma.sql`
+      FROM "PurchaseRequest" pr
+      JOIN "User" creator ON creator."id" = pr."createdById"
+      WHERE pr."organizationId" = ${req.user.organizationId}
+        AND pr."deletedAt" IS NULL
+        ${searchClause}
+        AND EXISTS (
+          SELECT 1
+          FROM "PurchaseRequestItem" pri
+          JOIN "RequestStatus" rs ON rs."id" = pri."statusId"
+          WHERE pri."requestId" = pr."id"
+            AND pri."deletedAt" IS NULL
+            AND rs."code" NOT IN ('CANCELADO', 'ENTREGUE')
+            AND pri."requestedQuantity" > pri."purchasedQuantity"
+        )
+    `;
+    const [requestRows, totalRows] = await Promise.all([
+      this.db.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+        SELECT pr."id"
+        ${openDemand}
+        ORDER BY pr."requestDate" ASC, pr."createdAt" ASC
+        LIMIT ${take} OFFSET ${skip}
+      `),
+      this.db.$queryRaw<Array<{ count: bigint }>>(Prisma.sql`
+        SELECT COUNT(*)::bigint AS count
+        ${openDemand}
+      `),
+    ]);
+    const requestIds = requestRows.map((row) => row.id);
+    if (!requestIds.length)
+      return {
+        data: [],
+        total: Number(totalRows[0]?.count || 0),
+        page: currentPage,
+        pageSize: take,
+      };
     const items = await this.db.purchaseRequestItem.findMany({
       where: {
+        requestId: { in: requestIds },
         deletedAt: null,
-        request: { organizationId: req.user.organizationId, deletedAt: null },
         status: { code: { notIn: ["CANCELADO", "ENTREGUE"] } },
-        ...(q.trim()
-          ? {
-              OR: [
-                { description: { contains: q.trim(), mode: "insensitive" } },
-                { manualCode: { contains: q.trim(), mode: "insensitive" } },
-                {
-                  request: {
-                    number: { contains: q.trim(), mode: "insensitive" },
-                  },
-                },
-              ],
-            }
-          : {}),
       },
       include: {
         request: {
@@ -123,60 +172,84 @@ export class PurchasesController {
         product: { select: { id: true, code: true } },
         status: true,
       },
-      orderBy: [{ request: { requestDate: "asc" } }, { createdAt: "asc" }],
-      take: 500,
+      orderBy: { createdAt: "asc" },
     });
-    return items
+    const requestOrder = new Map(requestIds.map((id, index) => [id, index]));
+    const data = items
       .filter((item) => item.requestedQuantity.gt(item.purchasedQuantity))
       .map((item) => ({
         ...item,
         openQuantity: item.requestedQuantity.minus(item.purchasedQuantity),
-      }));
+      }))
+      .sort(
+        (left, right) =>
+          (requestOrder.get(left.requestId) || 0) -
+          (requestOrder.get(right.requestId) || 0),
+      );
+    return {
+      data,
+      total: Number(totalRows[0]?.count || 0),
+      page: currentPage,
+      pageSize: take,
+    };
   }
 
   @Get("orders")
-  async orders(@Req() req: Authed, @Query("q") q = "") {
-    const orders = await this.db.purchaseOrder.findMany({
-      where: {
-        organizationId: req.user.organizationId,
-        deletedAt: null,
-        ...(q.trim()
-          ? {
-              OR: [
-                { number: { contains: q.trim(), mode: "insensitive" } },
-                {
-                  supplier: {
-                    legalName: { contains: q.trim(), mode: "insensitive" },
+  async orders(
+    @Req() req: Authed,
+    @Query("q") q = "",
+    @Query("page") page = "1",
+    @Query("pageSize") pageSize = "20",
+  ) {
+    const currentPage = Math.max(Number(page) || 1, 1);
+    const take = Math.min(Math.max(Number(pageSize) || 20, 5), 50);
+    const where = {
+      organizationId: req.user.organizationId,
+      deletedAt: null,
+      ...(q.trim()
+        ? {
+            OR: [
+              { number: { contains: q.trim(), mode: "insensitive" as const } },
+              {
+                supplier: {
+                  legalName: {
+                    contains: q.trim(),
+                    mode: "insensitive" as const,
                   },
                 },
-                {
-                  deliveries: {
-                    some: {
-                      invoiceNumber: {
-                        contains: q.trim(),
-                        mode: "insensitive",
-                      },
+              },
+              {
+                deliveries: {
+                  some: {
+                    invoiceNumber: {
+                      contains: q.trim(),
+                      mode: "insensitive" as const,
                     },
                   },
                 },
-              ],
-            }
-          : {}),
-      },
-      include: {
-        supplier: true,
-        items: {
-          include: {
-            deliveryItems: true,
-            allocations: {
-              include: {
-                requestItem: {
-                  include: {
-                    request: {
-                      select: {
-                        number: true,
-                        requesterOriginal: true,
-                        createdBy: { select: { id: true, name: true } },
+              },
+            ],
+          }
+        : {}),
+    };
+    const [orders, total] = await this.db.$transaction([
+      this.db.purchaseOrder.findMany({
+        where,
+        include: {
+          supplier: true,
+          items: {
+            include: {
+              deliveryItems: true,
+              allocations: {
+                include: {
+                  requestItem: {
+                    include: {
+                      request: {
+                        select: {
+                          number: true,
+                          requesterOriginal: true,
+                          createdBy: { select: { id: true, name: true } },
+                        },
                       },
                     },
                   },
@@ -184,12 +257,14 @@ export class PurchasesController {
               },
             },
           },
+          deliveries: { orderBy: { deliveredAt: "desc" } },
         },
-        deliveries: { orderBy: { deliveredAt: "desc" } },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 200,
-    });
+        orderBy: { createdAt: "desc" },
+        skip: (currentPage - 1) * take,
+        take,
+      }),
+      this.db.purchaseOrder.count({ where }),
+    ]);
     const users = await this.usersById(
       req.user.organizationId,
       orders.flatMap((order) => [
@@ -197,7 +272,7 @@ export class PurchasesController {
         ...order.deliveries.map((delivery) => delivery.receivedById),
       ]),
     );
-    return orders.map((order) => ({
+    const data = orders.map((order) => ({
       ...order,
       createdBy: users.get(order.buyerId) || {
         id: order.buyerId,
@@ -224,6 +299,7 @@ export class PurchasesController {
         ),
       })),
     }));
+    return { data, total, page: currentPage, pageSize: take };
   }
 
   @Get("orders/by-number/:number")
