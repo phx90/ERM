@@ -7,7 +7,22 @@ describe("quantidades de estoque", () => {
     expect(quantity("12.345")).toBe(12.345);
     expect(quantity("999999999999.999")).toBe(999999999999.999);
   });
-  it.each([null, undefined, "", " ", -1, "-0.1", "1.2345", "1e3", "1,5", Infinity, NaN, {}, true, "1000000000000"])("rejeita quantidade inválida: %s", value => {
+  it.each([
+    null,
+    undefined,
+    "",
+    " ",
+    -1,
+    "-0.1",
+    "1.2345",
+    "1e3",
+    "1,5",
+    Infinity,
+    NaN,
+    {},
+    true,
+    "1000000000000",
+  ])("rejeita quantidade inválida: %s", (value) => {
     expect(() => quantity(value)).toThrow();
   });
 });

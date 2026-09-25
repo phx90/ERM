@@ -42,12 +42,11 @@ export class ReportsController {
     }
     const template =
       process.env.EXCEL_TEMPLATE_PATH ||
-      "/app/templates/SOLICITACAO_DE_COMPRA_ERT_ERM.xlsx";
+      "/app/templates/SOLICITACAO_DE_COMPRA_ERM.xlsx";
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(template);
 
-    // O arquivo original é a fonte visual: abas, fórmulas, larguras,
-    // impressão, validações e visibilidade são preservadas.
+    // Mantém a formatação e as configurações de impressão da planilha usada pela empresa.
     const legacyQuoteSheet = workbook.getWorksheet("Planilha2");
     if (legacyQuoteSheet) {
       legacyQuoteSheet.getCell("A60").value = null;

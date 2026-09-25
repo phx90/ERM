@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const MIN_PASSWORD_LENGTH = 6;
+
 export const CRITICALITIES = ["BAIXA", "MEDIA", "ALTA"] as const;
 export const DEFAULT_STATUSES = [
   "RASCUNHO",

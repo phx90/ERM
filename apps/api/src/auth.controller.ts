@@ -15,6 +15,7 @@ import { hash, verify } from "argon2";
 import type { Request, Response } from "express";
 import { randomUUID } from "node:crypto";
 import { AuthGuard } from "./auth.js";
+import { MIN_PASSWORD_LENGTH } from "@compras/shared";
 
 @Controller("auth")
 export class AuthController {
@@ -131,9 +132,9 @@ export class AuthController {
     @Body() body: { password?: string },
   ) {
     const password = String(body.password || "");
-    if (password.length < 12)
+    if (password.length < MIN_PASSWORD_LENGTH)
       throw new BadRequestException(
-        "A nova senha deve ter ao menos 12 caracteres.",
+        `A nova senha deve ter ao menos ${MIN_PASSWORD_LENGTH} caracteres.`,
       );
     const user = await this.db.user.findFirstOrThrow({
       where: { id: req.user.sub, active: true, deletedAt: null },

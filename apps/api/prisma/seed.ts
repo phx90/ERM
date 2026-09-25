@@ -1,10 +1,13 @@
 import { PrismaClient, Role } from "@prisma/client";
+import { MIN_PASSWORD_LENGTH } from "@compras/shared";
 import { hash } from "argon2";
 
 const db = new PrismaClient();
 const password = process.env.ADMIN_PASSWORD;
-if (!password || password.length < 12)
-  throw new Error("ADMIN_PASSWORD deve ter ao menos 12 caracteres.");
+if (!password || password.length < MIN_PASSWORD_LENGTH)
+  throw new Error(
+    `ADMIN_PASSWORD deve ter ao menos ${MIN_PASSWORD_LENGTH} caracteres.`,
+  );
 const organization = await db.organization.upsert({
   where: { id: "00000000-0000-0000-0000-000000000001" },
   update: {},

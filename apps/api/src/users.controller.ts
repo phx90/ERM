@@ -17,6 +17,7 @@ import type { Role } from "@prisma/client";
 import { hash } from "argon2";
 import type { Request } from "express";
 import { randomUUID } from "node:crypto";
+import { MIN_PASSWORD_LENGTH } from "@compras/shared";
 import { AuthGuard } from "./auth.js";
 import { PrismaService } from "./prisma.service.js";
 
@@ -49,9 +50,9 @@ function parseCreate(raw: unknown) {
     );
   if (!roles.includes(role))
     throw new BadRequestException("Selecione um perfil válido.");
-  if (password.length < 12)
+  if (password.length < MIN_PASSWORD_LENGTH)
     throw new BadRequestException(
-      "A senha temporária deve ter ao menos 12 caracteres.",
+      `A senha temporária deve ter ao menos ${MIN_PASSWORD_LENGTH} caracteres.`,
     );
   if (jobTitle && jobTitle.length > 100)
     throw new BadRequestException("O cargo deve ter no máximo 100 caracteres.");
@@ -228,9 +229,9 @@ export class UsersController {
   ) {
     this.requireAdmin(req);
     const password = String((raw as { password?: unknown })?.password || "");
-    if (password.length < 12)
+    if (password.length < MIN_PASSWORD_LENGTH)
       throw new BadRequestException(
-        "A senha temporária deve ter ao menos 12 caracteres.",
+        `A senha temporária deve ter ao menos ${MIN_PASSWORD_LENGTH} caracteres.`,
       );
     const current = await this.db.user.findFirst({
       where: { id, organizationId: req.user.organizationId, deletedAt: null },

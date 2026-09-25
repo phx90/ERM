@@ -54,6 +54,7 @@ import {
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  MIN_PASSWORD_LENGTH,
   purchaseRequestSchema,
   type PurchaseRequestInput,
 } from "@compras/shared";
@@ -363,12 +364,12 @@ function ChangePassword() {
             <input
               name="password"
               type="password"
-              minLength={12}
+              minLength={MIN_PASSWORD_LENGTH}
               required
               autoFocus
               autoComplete="new-password"
               className="input mt-1.5"
-              placeholder="Mínimo de 12 caracteres"
+              placeholder={`Mínimo de ${MIN_PASSWORD_LENGTH} caracteres`}
             />
           </label>
           <label className="block text-sm font-semibold text-slate-700">
@@ -376,7 +377,7 @@ function ChangePassword() {
             <input
               name="confirmation"
               type="password"
-              minLength={12}
+              minLength={MIN_PASSWORD_LENGTH}
               required
               autoComplete="new-password"
               className="input mt-1.5"

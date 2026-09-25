@@ -54,7 +54,7 @@ try {
   try {
     docker compose up -d postgres
     if ($LASTEXITCODE -ne 0) { throw "Não foi possível iniciar o PostgreSQL." }
-    $postgresContainer = (docker compose ps -q postgres).Trim()
+    $postgresContainer = ([string](docker compose ps -q postgres)).Trim()
     if (-not $postgresContainer) { throw "Contêiner PostgreSQL não encontrado." }
 
     docker compose stop api web | Out-Null
@@ -65,7 +65,8 @@ try {
 
     docker compose up -d api
     if ($LASTEXITCODE -ne 0) { throw "Não foi possível iniciar a API." }
-    $apiContainer = (docker compose ps -q api).Trim()
+    $apiContainer = ([string](docker compose ps -q api)).Trim()
+    if (-not $apiContainer) { throw "Contêiner da API não encontrado." }
     docker cp (Join-Path $working "files.tar.gz") "${apiContainer}:/tmp/erm-files.tar.gz"
     docker exec $apiContainer tar -xzf /tmp/erm-files.tar.gz -C /app
     docker exec $apiContainer rm -f /tmp/erm-files.tar.gz | Out-Null

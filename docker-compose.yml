@@ -27,7 +27,7 @@ services:
         required: false
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-compras}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-compras}?schema=public
-      EXCEL_TEMPLATE_PATH: /app/templates/SOLICITACAO_DE_COMPRA_ERT_ERM.xlsx
+      EXCEL_TEMPLATE_PATH: /app/templates/SOLICITACAO_DE_COMPRA_ERM.xlsx
       REPORTS_PATH: /app/reports
       ATTACHMENTS_PATH: /app/attachments
       NODE_OPTIONS: --max-old-space-size=1024

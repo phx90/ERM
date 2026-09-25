@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { MIN_PASSWORD_LENGTH } from "@compras/shared";
 import {
   CheckCircle2,
   KeyRound,
@@ -283,7 +284,7 @@ export function Users() {
       {createOpen && (
         <UserModal
           title="Criar novo usuário"
-          description="Defina o perfil de acesso e uma senha temporária de pelo menos 12 caracteres."
+          description={`Defina o perfil de acesso e uma senha temporária de pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`}
           pending={createUser.isPending}
           error={createUser.error?.message}
           onClose={() => setCreateOpen(false)}
@@ -406,10 +407,10 @@ function UserModal({
               type="password"
               className="input mt-1.5"
               required
-              minLength={12}
+              minLength={MIN_PASSWORD_LENGTH}
               autoComplete="new-password"
               autoFocus={resetOnly}
-              placeholder="Mínimo de 12 caracteres"
+              placeholder={`Mínimo de ${MIN_PASSWORD_LENGTH} caracteres`}
             />
           </label>
           {error && (

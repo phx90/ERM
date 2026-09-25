@@ -41,10 +41,14 @@ $webWasRunning = $false
 
 Push-Location $project
 try {
-  $postgresContainer = (docker compose ps -q postgres).Trim()
-  $apiContainer = (docker compose ps -q api).Trim()
-  if (-not $postgresContainer) { throw "O contêiner PostgreSQL não está em execução." }
-  if (-not $apiContainer) { throw "O contêiner da API não está em execução." }
+  $postgresContainer = ([string](docker compose ps -q postgres)).Trim()
+  $apiContainer = ([string](docker compose ps -q api)).Trim()
+  if (-not $postgresContainer) {
+    throw "O PostgreSQL do ERM não está em execução. Inicie o sistema com: docker compose up -d"
+  }
+  if (-not $apiContainer) {
+    throw "A API do ERM não está em execução. Inicie o sistema com: docker compose up -d"
+  }
   $webWasRunning = [bool](docker compose ps -q web)
   if ($webWasRunning) { docker compose stop web | Out-Null }
 
@@ -61,7 +65,10 @@ try {
   docker exec $apiContainer rm -f $remoteFiles | Out-Null
 
   $gitCommit = "indisponível"
-  try { $gitCommit = (git rev-parse HEAD 2>$null).Trim() } catch {}
+  try {
+    $currentCommit = ([string](git rev-parse HEAD 2>$null)).Trim()
+    if ($currentCommit) { $gitCommit = $currentCommit }
+  } catch {}
   [ordered]@{
     formatVersion = 1
     createdAt = (Get-Date).ToString("o")
